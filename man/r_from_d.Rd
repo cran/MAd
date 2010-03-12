@@ -8,14 +8,14 @@
 r_from_d(d, var.d, a = 4)
 }
 \arguments{
-  \item{d}{Mean difference statistic (d) reported in primary study
+  \item{d}{Mean difference statistic (d) reported in primary study.
  }
-  \item{var.d}{Variance of d reported in primary study
+  \item{var.d}{Variance of d reported in primary study.
 }
   \item{a}{Used to compute correlation. Default is 4.
 }
 }
-\value{Outputs a correlation coefficient (r)
+\value{Outputs a correlation coefficient (r).
 }
 \author{ AC Del Re & William T. Hoyt
 
@@ -42,7 +42,6 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{prop_to_or}}, 
 \code{\link{prop_to_d}}, 
 \code{\link{r_from_chi}}, 
-\code{\link{r_from_d}},
 \code{\link{r_from_d1}},
 \code{\link{r_from_t}}
 }

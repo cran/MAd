@@ -10,14 +10,14 @@ r_from_d1(d, n.1, n.2, var.d)
 \arguments{
   \item{d}{Mean difference statistic (d) reported in primary study.
 }
-  \item{n.1}{sample size of group 1 reported in primary study.
+  \item{n.1}{sample size of group one reported in primary study.
 }
-  \item{n.2}{sample size of group 2 reported in primary study.
+  \item{n.2}{sample size of group two reported in primary study.
 }
   \item{var.d}{variance of d reported in primary study.
 }
 }
-\value{ Computes a correlation coefficient (r)}
+\value{ Computes a correlation coefficient (r).}
 \references{Borenstein (2009). Effect sizes for continuous data. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 279-293). New York: Russell Sage Foundation.
 }
 \author{ AC Del Re & William T. Hoyt
@@ -44,7 +44,6 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{prop_to_d}}, 
 \code{\link{r_from_chi}}, 
 \code{\link{r_from_d}},
-\code{\link{r_from_d1}},
 \code{\link{r_from_t}}
 }
 \keyword{ arith }

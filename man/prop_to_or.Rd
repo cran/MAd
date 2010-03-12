@@ -2,7 +2,7 @@
 \alias{prop_to_or}
 \title{Proportion to Odds Ratio
 }
-\description{Converts proportions to odds ratio.
+\description{Converts proportions reported in the primary study to odds ratio.
 }
 \usage{
 prop_to_or(p1, p2, n.ab, n.cd)
@@ -18,8 +18,8 @@ prop_to_or(p1, p2, n.ab, n.cd)
 }
 }
 \value{
-\item{d}{Standardized mean difference (d)}
-\item{var_d }{Variance of d}
+\item{d}{Standardized mean difference (d).}
+\item{var_d }{Variance of d.}
 
 }
 \author{ AC Del Re & William T. Hoyt
@@ -44,7 +44,6 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{p.ancova_to_d1}},
 \code{\link{p.ancova_to_d2}},
 \code{\link{lor_to_d}},
-\code{\link{prop_to_or}}, 
 \code{\link{prop_to_d}}, 
 \code{\link{r_from_chi}}, 
 \code{\link{r_from_d}},

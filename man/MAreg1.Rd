@@ -8,7 +8,7 @@
 MAreg1(meta, mod, method = "random")
 }
 \arguments{
-\item{meta}{\code{data.frame} with id, g (unbiased standardized mean difference), var.g (variance of g), wi (fixed effects study weight), wi.tau (random-effects study weight) for each study. The function requires that the column name for these values be exactly as stated here.
+\item{meta}{Aggregated \code{data.frame} (see \code{ComplData} function for setting up the dataset for these analyses) with id, g (unbiased standardized mean difference), var.g (variance of g), wi (fixed effects study weight), wi.tau (random-effects study weight) for each study. The function requires that the column name for these values be exactly as stated here.
 }
 
   \item{mod}{ Moderator variable used for meta-regression.  
@@ -44,7 +44,7 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{MAregGraph}}
 }
 \examples{
-id<-c(1, rep(1:19))
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,

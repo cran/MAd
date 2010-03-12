@@ -224,6 +224,15 @@ p.ancova_to_d2 <- function(p, n.1, n.2, R, q) {
   return(out)
 }
 
+# computing d from odds ratio
+
+or_to_d <- function(or) {
+  lor <- log(or)
+  d <- lor*sqrt(3)/pi
+  out <- cbind(lor, d)
+  return(out)
+}  
+
 # computing d from log odds ratio
 
 lor_to_d <- function(lor, var.lor) {
@@ -250,6 +259,29 @@ prop_to_d <-function(p1, p2, n.ab, n.cd) {
   d <- lor*sqrt(3)/pi
   var.d <- 3*var.lor/pi^2
   out <- cbind(or,lor,var.lor, d, var.d)
+  return(out)
+}
+
+# Odds Ratio to d: if have info for 'failure' in both conditions 
+# (B = # tmt failure; D = # non-tmt failure) and the sample size
+# for each group (n.1 & n.2 respectively):
+
+fail_to_d <- function(B, D, n.1, n.0) {
+  A <- n.1 - B  # tmt success
+  B <- B        # tmt failure
+  C <- n.0 - D  # non-tmt success
+  D <- D        # non-tmt failure
+  p1 <- A/n.1   # proportion 1 
+  p2 <- C/n.0   # proportion 2
+  n.ab <-  A+B  # n of A+B
+  n.cd <-  C+D  # n of C+D        
+  or <- (p1 * (1 - p2))/(p2 * (1 - p1))  # odds ratio
+  lor <- log(or)  # log odds ratio
+  var.lor <-  1/A + 1/B + 1/C + 1/D  # variance of log odds ratio
+  #var.lor <- 1/(n.ab*p1*(1-p1))+1/(n.cd*p2*(1-p2))
+  d <- lor * sqrt(3)/pi  # conversion to d
+  var.d <- 3 * var.lor/pi^2  # variance of d
+  out <- cbind(or, lor, var.lor, d, var.d)
   return(out)
 }
 
@@ -388,7 +420,7 @@ aggs <- function(g,  n.1, n.2, cor = .50) {
 agg_g <- function(meta,id, g, var.g, n.1, n.2, cor = .50) {
   meta$var.g <- var.g
   st <- unique(id)       
-  out <- data.frame(id=rep(NA,length(st)))
+  out <- data.frame(id=st)
     for(i in 1:length(st)) { 
     out$id[i] <- st[i]
     out$g[i] <- aggs(g=g[id==st[i]], n.1= n.1[id==st[i]],
@@ -417,8 +449,8 @@ agg_g2 <- function(meta, id, g, var.g, n.1, n.2, mod, cor = .50) {
       # row of df to fill
       ro <- (i-1)*length(um) + j
       # Are there any rows in meta where id==i and mod==j?
-       m1<-match(id,i,nomatch=0)  # (rows where id==i)
-       m2<-match(mod,j,nomatch=0)  # (rows where mod==j)
+       m1<-match(id,st[i],nomatch=0)  # (rows where id==i)
+       m2<-match(mod,um[j],nomatch=0)  # (rows where mod==j)
        #  m1*m2 will = 1 for each row in which both are true.
        # sum(m1*m2) gives the number of rows for which both are true.
        num <- sum(m1*m2)
@@ -455,7 +487,7 @@ MetaG <-  function(meta, cor = .50) {
   meta$l.ci95 <- meta$g-1.96*sqrt(meta$var.g)     #create random ci for each study
   meta$u.ci95 <- meta$g + 1.96*sqrt(meta$var.g)
   meta$z.score <- meta$g/sqrt(meta$var.g)
-  meta$p.value <- 2*(1-pt(abs(meta$z.score),  meta$n.1 + meta$n.2 -1))
+  meta$p.value <- 2*(1-pt(abs(meta$z.score),  (meta$n.1 + meta$n.2) -1))
   meta$wi <-  1/meta$var.g  # computing weight for each study
   meta$wiTi <- meta$wi*meta$g  # used to calculate omnibus
   meta$wiTi2 <- meta$wi*(meta$g)^2  # used to calculate omnibus
@@ -511,7 +543,7 @@ Wifun <-  function(meta) {
 # g (unbiased standardized mean diff ES),  and n.1 (group 1 sample size),
 # n.2 (group 2 sample size).
 
-OmnibusES<-  function(meta,  var="weighted" ) {
+OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
   # Computes fixed and random effects omnibus effect size for correlations.  
   # Args:
   #   meta: data.frame with g (standardized mean diff) and n (sample size)for each study.
@@ -522,7 +554,7 @@ OmnibusES<-  function(meta,  var="weighted" ) {
   #   upper and lower confidence intervals, p-value, Q (heterogeneity test), I2
   #   (I-squared--proportion of total variation in tmt effects due to heterogeneity 
   #   rather than chance). 
-  meta <- MetaG(meta)
+  meta <- MetaG(meta, cor)
   k <- length(!is.na(meta$g)) # number of studies
   df <- k-1 
   sum.wi <- sum(meta$wi, na.rm=TRUE)  # used to calculate omnibus
@@ -1040,7 +1072,7 @@ CatComp <- function(meta, mod, x1=NULL, x2=NULL,  method="post.hoc1") {
 # multifactor cat mod analysis [IN PROGRESS]:
 #add relevant columns and it will works fine!
 #MFCatMod <- function(meta, mod1, mod2) {
-#  m <- wifun(meta)
+#  m <- Wifun(meta)
 #  m$mod1 <- mod1
 #  m$mod2 <- mod2
 #  fixed <- ddply(m, c("mod1", "mod2"), summarise, sum.wi = sum(wi),
@@ -1634,9 +1666,9 @@ MultiModGraph <- function(meta, conmod,  catmod, method="random",
 
 # Correction for Attenuation
 
-Rho_TU<- function(r,xx,yy) {
-  r.corrected<-r/(sqrt(xx)*sqrt(yy))
-  return(r.corrected)
+Rho_TU<- function(g,xx,yy) {
+  g.corrected<-g/(sqrt(xx)*sqrt(yy))
+  return(g.corrected)
    }
 
 

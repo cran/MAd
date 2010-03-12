@@ -42,7 +42,6 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{r_from_chi}}, 
 \code{\link{r_from_d}},
 \code{\link{r_from_d1}},
-\code{\link{r_from_t}}
 }
 \keyword{ arith }
 

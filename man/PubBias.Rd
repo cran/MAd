@@ -1,6 +1,6 @@
 \name{PubBias}
 \alias{PubBias}
-\title{Assess Publication Bias
+\title{Assess for Publication Bias
 }
 \description{Assess for publication bias in the meta-analytic data}
 \usage{

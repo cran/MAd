@@ -1,28 +1,18 @@
-\name{mean_to_d2}
-\alias{mean_to_d2}
-\title{Means with Pooled SD to Standardized Mean Difference
+\name{or_to_d}
+\alias{or_to_d}
+\title{Odds Ratio to Standardized Mean Difference (d)
 }
-\description{Converts raw mean scores with pooled standard deviation from the primary study to a standardized mean difference (d).
+\description{Converts odds ratio reported in the primary study to standardized mean difference (d).
 }
 \usage{
-mean_to_d2(m.1, m.2, s.pooled, n.1, n.2)
+or_to_d(or)
 }
 \arguments{
-  \item{m.1}{Mean of group one.
+  \item{or}{Odds ratio.
 }
-  \item{m.2}{Mean of group two.
-}
-  \item{s.pooled}{Pooled standard deviation.
-}
-  \item{n.1}{Sample size of group one. 
-}
-  \item{n.2}{Sample size of group two. 
-}
-}
+} 
 \value{
 \item{d}{Standardized mean difference (d).}
-\item{var.d }{Variance of d.}
-
 }
 \author{ AC Del Re & William T. Hoyt
 
@@ -33,6 +23,7 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \seealso{
 \code{\link{d_to_g}},
 \code{\link{mean_to_d}},
+\code{\link{mean_to_d2}},
 \code{\link{t_to_d}},
 \code{\link{f_to_d}},
 \code{\link{p_to_d1}},
@@ -46,7 +37,6 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{p.ancova_to_d2}},
 \code{\link{lor_to_d}},
 \code{\link{prop_to_or}}, 
-\code{\link{prop_to_d}}, 
 \code{\link{r_from_chi}}, 
 \code{\link{r_from_d}},
 \code{\link{r_from_d1}},

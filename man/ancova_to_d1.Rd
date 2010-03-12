@@ -21,7 +21,7 @@ ancova_to_d1(m.1.adj, m.2.adj, sd.adj, n.1, n.2, R, q)
 }
   \item{R}{Covariate outcome correlation or multiple correlation
 }
-  \item{q}{number of covariates
+  \item{q}{Number of covariates
 }
 }
 \value{

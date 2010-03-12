@@ -2,15 +2,15 @@
 \alias{ComplData}
 \title{Complete Dataset
 }
-\description{ Function to reduce data set with complete data for 1 predictor. Will accept a \code{data.frame} with multiple rows per study and reduce the \code{data.frame} to one effect size per study based on Hedges & Olkin's recommended aggregation procedures (1994; 2009).
+\description{ Function to reduce data set with complete data for 1 predictor. Will accept a \code{data.frame} with multiple rows per study and reduce the \code{data.frame} to one effect size per study based on Hedges & Olkin's recommended aggregation procedures (1994 & 2009).
 }
 \usage{
 ComplData(meta, mod, type = "independent", cor = .50)
 }
 \arguments{
-\item{meta}{\code{data.frame} with id, g (unbiased standardized mean difference), var.g (variance of g), n.1 (sample size of treatment group), and n.2 (sample size for comparison group)for each study. The function requires that the column name for these values be exactly as stated here.
+\item{meta}{\code{data.frame} with id, g (unbiased standardized mean difference), var.g (variance of g), n.1 (sample size of treatment group), and n.2 (sample size for comparison group) for each study. The function requires that the column name for these values be exactly as stated here.
 }
-  \item{mod}{ Moderator variable wanting to be retained for further analysis. 
+  \item{mod}{ Moderator variable to be retained for further analysis. 
 }
   \item{type}{ Type of data aggregation. Options are \code{independent} or \code{dependent}. Choose \code{independent} if a fully independent data set is desired, for which the function will randomly select one factor level of the within-study moderator (if there are > 1 coded from the primary studies, e.g., the primary study reports early, mid, and late symptom change from CBT treatment). Choose \code{dependent} if all factor levels of the within-study moderator are to be kept in the data set. Default is \code{independent}.
 }

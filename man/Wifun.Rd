@@ -1,4 +1,4 @@
-\name{wifun}
+\name{Wifun}
 \title{Weights added to Meta Data}
 \alias{Wifun}
 \description{Adds weights to the meta-analysis data set.}

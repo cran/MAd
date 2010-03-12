@@ -10,7 +10,7 @@ MultiModGraph(meta, conmod, catmod, method = "random",
 conmod.name = NULL, title = NULL)
 }
 \arguments{
-\item{meta}{\code{data.frame} with id, g (unbiased standardized mean difference), var.g (variance of g) for comparison group)for each study. The function requires that the column name for these values be exactly as stated here.
+\item{meta}{Aggregated \code{data.frame} (see \code{ComplData} function) with id, g (unbiased standardized mean difference), var.g (variance of g), for each study. The function requires that the column name for these values be exactly as stated here.
 }
   \item{conmod}{Continuous moderator variable used for analysis.
 }
@@ -30,7 +30,7 @@ conmod.name = NULL, title = NULL)
 \author{ AC Del Re & William T. Hoyt 
 }
 \examples{
-id<-c(1, rep(1:19))
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,
@@ -44,6 +44,12 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod, mod2)
 # Example
 
 MultiModGraph(df, conmod = df$mod2, catmod = df$mod)
+}
+\seealso{
+\code{\link{CatMod}},
+\code{\link{MAreg1}}
+\code{\link{MAreg2}}
+\code{\link{MAregGraph}}
 }
 \keyword{ aplot }
 

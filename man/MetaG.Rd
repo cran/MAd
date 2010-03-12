@@ -2,9 +2,7 @@
 \alias{MetaG}
 \title{Meta-Analysis Aggregation
 }
-\description{
-Computes within-study aggregation (see Gleser & Olkin, 1994 and Gleser & Olkin, 2009) and adds fixed and random effects weights for each study in the meta-analysis.
-}
+\description{This fuction has automated (i.e., will compute for all studies simultaneously) the process of aggregating within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). These functions default the correlation between within-study effect sizes at .50 (Wampold et al., 1997) and will compute the correct aggregated effect size for all studies. This default of .50 is adjustable.  \code{MAd} aggregation functions implement Gleser & Olkin (1994; 2009) recommendations for aggregating dependent correlations.}
 \usage{
 MetaG(meta, cor = .50)
 }
@@ -29,7 +27,7 @@ Shadish & Haddock (2009). Analyzing effect sizes: Fixed-effects models. In H. Co
 Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
 \examples{
-id<-c(1, rep(1:19))
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,

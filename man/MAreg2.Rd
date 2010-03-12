@@ -15,7 +15,7 @@ MAreg2(reg)
   
 \code{reg <- lm(df$g ~ df$mod8 + df$mod1, weights= df$wi.tau)}
 
-The outcome variable used in the initial regression should be a Hedges g (Cooper et al., 2009). The predictors (moderator(s)) can be either continuous or categorical. Weight the regression by either the fixed or random effect weight (e.g., fixed equals \code{data$wi} and random equals \code{data$wi.tau}). See \code{ComplData} function to assist in reducing the dataset, if applicable. See Konstantopoulos & Hedges (2009; pp. 289-290) for the computations used in this function.
+where lm = linear model, df$g = Hedges g, df$mod8 = predictor/moderator, df$mod1 = second predictor/moderator, and df$wi.tau = weighting variable. The outcome variable used in the initial regression should be a Hedges g (Cooper et al., 2009). The predictors (moderator(s)) can be either continuous or categorical. Weight the regression by either the fixed or random effect weight (e.g., fixed equals \code{data$wi} and random equals \code{data$wi.tau}). See \code{ComplData} function to assist in reducing the dataset, if applicable. See Konstantopoulos & Hedges (2009; pp. 289-290) for the computations used in this function.
 }
 \value{
 \item{b}{ Unstandardized regression coefficient.
@@ -45,7 +45,7 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 
 }
 \examples{
-id<-c(1, rep(1:19))
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,
@@ -60,7 +60,7 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod)
 
 regr <- lm(df$g ~ df$mod, weights= df$wi)
  
-MAreg2(regr) # Function will correct standard errors
+MAreg2(regr) # Function will correct inaccurate OLS standard errors
 }  
 \keyword{ model }
 \keyword{ regression }

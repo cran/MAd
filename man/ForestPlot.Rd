@@ -8,7 +8,7 @@
 ForestPlot(meta, method = "random", title = NULL)
 }
 \arguments{
-\item{meta}{\code{data.frame} with id, g (unbiased standardized mean difference), var.g (variance of g), n.1 (sample size of treatment group), and n.2 (sample size for comparison group)for each study. The function requires that the column name for these values be exactly as stated here.
+\item{meta}{Aggregated \code{data.frame} (see \code{ComplData} function) with id, g (unbiased standardized mean difference), and var.g (variance of g) for each study. The function requires that the column name for these values be exactly as stated here.
 }
 
   \item{method}{Model used, either \code{random} or \code{fixed} effects. Default is \code{random}.
@@ -25,7 +25,7 @@ ForestPlot(meta, method = "random", title = NULL)
 Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
 \examples{
-id<-c(1, rep(1:19))
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,

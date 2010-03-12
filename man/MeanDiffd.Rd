@@ -2,10 +2,12 @@
 \alias{MeanDiffd}
 \title{Automated Conversion to Standardized Mean Difference
 }
-\description{Adds d (standardized mean differnce) to a \code{data.frame}. Required inputs are: n.1 (sample size of group one), m.1 (raw post-mean value of group one), sd.1 (standard deviation of group one), n.2 (sample size of group two), m.2 (raw post-mean value of group two), sd.2 (standard deviation of group two). 
+\description{Adds d (standardized mean difference) to a \code{data.frame}. Required inputs are: n.1 (sample size of group one), m.1 (raw post-mean value of group one), sd.1 (standard deviation of group one), n.2 (sample size of group two), m.2 (raw post-mean value of group two), sd.2 (standard deviation of group two). 
 }
 \usage{
-MeanDiffd(meta, n.1 = meta$n.1, m.1 = meta$m.1, sd.1 = meta$sd.1, n.2 = meta$n.2, m.2 = meta$m.2, sd.2 = meta$sd.2, denom = "pooled.sd")
+MeanDiffd(meta, n.1 = meta$n.1, m.1 = meta$m.1, sd.1 = meta$sd.1, 
+          n.2 = meta$n.2, m.2 = meta$m.2, sd.2 = meta$sd.2, 
+          denom = "pooled.sd")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -13,23 +15,26 @@ MeanDiffd(meta, n.1 = meta$n.1, m.1 = meta$m.1, sd.1 = meta$sd.1, n.2 = meta$n.2
 }
   \item{n.1}{sample size of group one.
 }
-  \item{m.1}{raw post-mean value of group one
+  \item{m.1}{raw post-mean value of group one.
 }
-  \item{sd.1}{standard deviation of group one
+  \item{sd.1}{standard deviation of group one.
 }
-  \item{n.2}{sample size of group two
+  \item{n.2}{sample size of group two.
 }
-  \item{m.2}{raw post-mean value of group two
+  \item{m.2}{raw post-mean value of group two.
 }
-  \item{sd.2}{standard deviation of group two
+  \item{sd.2}{standard deviation of group two.
 }
-  \item{denom}{Value in the denominator to standardize mean difference. \code{pooled.sd} pools both groups in deriving d. \code{control.sd} uses the standard deviation of group two to calculate d. 
+ \item{denom}{Value in the denominator to standardize the means by. \code{pooled.sd} will pool together both groups in deriving d. \code{control.sd} uses the standard deviation of group two (typically the control condition) to calculate d. 
 }
 }
 \value{
-  \item{d }{Standardized mean difference}
-  \item{var.d }{Variance of d}
-  \item{se.d }{Standard error of d}
+  \item{d }{Standardized mean difference.
+  }
+  \item{var.d }{Variance of d.
+  }
+  \item{se.d }{Standard error of d.
+  }
 }
 \author{AC Del Re & William T. Hoyt
 
@@ -42,7 +47,7 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 \code{\link{MeanDiffg}}
 }
 \examples{
-id<-rep(1:20)
+id<-c(1, 1:19)
 n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 m.1 <- c(.68,.56,.23,.64,.49,.4,1.49,.53,.58,1.18,.11,1.27,.26,.40,.49,
