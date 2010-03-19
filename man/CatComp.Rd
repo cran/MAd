@@ -22,7 +22,7 @@ CatComp(meta, mod, x1, x2, method = "post.hoc1")
 \details{See Konstantopoulos & Hedges (2009; pp. 280-288) for the computations used in this function.
 }
 \value{
-\item{d}{Standardized mean difference (d)).
+\item{d}{Standardized mean difference (d).
 }
 \item{Var(d)}{Variance of d (standardized mean difference).
 }

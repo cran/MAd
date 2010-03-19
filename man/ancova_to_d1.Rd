@@ -9,24 +9,24 @@ Converts an ANCOVA F-statistic to d (standardized mean difference)
 ancova_to_d1(m.1.adj, m.2.adj, sd.adj, n.1, n.2, R, q)
 }
 \arguments{
-  \item{m.1.adj}{Adjusted mean of treatment group from ANCOVA
+  \item{m.1.adj}{Adjusted mean of treatment group from ANCOVA.
 }
-  \item{m.2.adj}{Adjusted mean of comparison group from ANCOVA
+  \item{m.2.adj}{Adjusted mean of comparison group from ANCOVA.
 }
-  \item{sd.adj}{Adjusted standard deviation
+  \item{sd.adj}{Adjusted standard deviation.
 }
-  \item{n.1}{Treatment group sample size
+  \item{n.1}{Treatment group sample size.
 }
-  \item{n.2}{Comparison group sample size
+  \item{n.2}{Comparison group sample size.
 }
-  \item{R}{Covariate outcome correlation or multiple correlation
+  \item{R}{Covariate outcome correlation or multiple correlation.
 }
-  \item{q}{Number of covariates
+  \item{q}{Number of covariates.
 }
 }
 \value{
-\item{d}{Standardized mean difference (d)}
-\item{var_d }{Variance of d}
+\item{d}{Standardized mean difference (d).}
+\item{var_d }{Variance of d.}
 
 }
 \author{ AC Del Re & William T. Hoyt

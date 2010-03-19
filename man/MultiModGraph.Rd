@@ -43,7 +43,7 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod, mod2)
 
 # Example
 
-MultiModGraph(df, conmod = df$mod2, catmod = df$mod)
+\dontrun{MultiModGraph(df, conmod = df$mod2, catmod = df$mod)}
 }
 \seealso{
 \code{\link{CatMod}},

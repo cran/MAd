@@ -19,7 +19,7 @@ CatModGraph(meta, mod, method = "random", modname = NULL,title = NULL)
   \item{title}{ Plot title. Default is NULL. 
 }
 }
-\value{ Boxplot graph with median, mean (denoted by \'+' inter-quartile range, max, min, and outliers from a fixed or random effects categorical moderator analysis. Places jitter points (for each study) on the boxplots. The size of each point (representing a study in the analysis) are based on study weights where more precise studies have larger points. The ggplot2 package outputs the rich graphics.
+\value{ Boxplot graph with median, mean (denoted by '+' inter-quartile range, max, min, and outliers from a fixed or random effects categorical moderator analysis. Places jitter points (for each study) on the boxplots. The size of each point (representing a study in the analysis) are based on study weights where more precise studies have larger points. The ggplot2 package outputs the rich graphics.
 }
 \references{ Cooper, H., Hedges, L.V., & Valentine, J.C. (2009). \emph{The handbook of research synthesis and meta-analysis} (2nd edition). New York: Russell Sage Foundation. 
 }
@@ -44,7 +44,7 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod)
 
 # Example
 
-CatModGraph(df,df$mod)
+\dontrun{CatModGraph(df,df$mod)}
 }   
 \keyword{aplot}
 

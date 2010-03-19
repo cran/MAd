@@ -39,7 +39,7 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod)
 
 # Example
 
-FunnelPlot(df)
+\dontrun{FunnelPlot(df)}
 }
 \seealso{
 \code{\link{PubBias}},

@@ -9,24 +9,24 @@ Converts an ANCOVA F-statistic with pooled standard deviation to d (standardized
 ancova_to_d2(m.1.adj, m.2.adj, s.pooled, n.1, n.2, R, q)
 }
 \arguments{
-  \item{m.1.adj}{Adjusted mean of treatment group from ANCOVA
+  \item{m.1.adj}{Adjusted mean of treatment group from ANCOVA.
 }
-  \item{m.2.adj}{Adjusted mean of comparison group from ANCOVA
+  \item{m.2.adj}{Adjusted mean of comparison group from ANCOVA.
 }
-  \item{s.pooled}{Pooled standard deviation
+  \item{s.pooled}{Pooled standard deviation.
 }
-  \item{n.1}{Treatment group sample size
+  \item{n.1}{Treatment group sample size.
 }
-  \item{n.2}{Comparison group sample size
+  \item{n.2}{Comparison group sample size.
 }
-  \item{R}{Covariate outcome correlation or multiple correlation
+  \item{R}{Covariate outcome correlation or multiple correlation.
 }
-  \item{q}{number of covariates
+  \item{q}{number of covariates.
 }
 }
 \value{
-\item{d}{Standardized mean difference (d)}
-\item{var_d }{Variance of d}
+\item{d}{Standardized mean difference (d).}
+\item{var_d }{Variance of d.}
 
 }
 \author{ AC Del Re & William T. Hoyt

@@ -8,15 +8,22 @@
 # mean differences (d and g) meta-analysis using standard procedures
 # as described in Cooper, Hedges, & Valentine's Handbook of
 # Research Synthesis and Meta-Analysis (2009).
-# This package requires the 'ggplot2' package, 'plyr' package.
 
 require('ggplot2')
-require('plyr')
-#require('psych') 
+ 
 
 
 
 # a formula for attenuation already created:  correct.cor(x, y)
+
+##=== New Functions ===##
+
+# 3.18.10 internal for GUI: convert to factor
+
+facts <- function(meta, mod) {
+  meta[,mod] <- factor(meta[,mod])
+  return(meta)
+}
 
 
 ##=== Preliminary Steps ===##
@@ -607,7 +614,7 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
                  I2=I2))
   omni.data <- as.data.frame(c(Fixed, Random))      
   omni.data$Omnibus <- c("k", "ES", "var.ES", "SE", "CI.lower", 
-                         "CI.upper", "Z", "p", "Q", "df", "p.hetero", 
+                         "CI.upper", "Z", "p", "Q", "df", "p.h", 
                          "I2")
   omni.data <- omni.data[c(3, 1, 2)]
   omni.data <- as.data.frame(omni.data)
@@ -618,7 +625,6 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
 # Now,  if there is significant heterogeneity (p_homog < .05),  look for moderators.
 
 ##================= Categorical Moderator Analysis ================##
-# requires plyr package
 
 # Fixed effects intermediate level functions:
 
@@ -784,7 +790,7 @@ CatModf <-  function(meta,  mod) {
   mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)] #effects due to heterogeneity rather than chance (p263)
   rownames(mod.sig2) <- NULL
   colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.hetero",  "I2")
+  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
   return(mod.sig2)
 }
 
@@ -906,7 +912,7 @@ CatModr <-  function(meta,  mod) {
   mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)]
   rownames(mod.sig2) <- NULL
   colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.hetero",  "I2")
+  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
   return(mod.sig2)
 }  
 
@@ -930,7 +936,7 @@ qrs <- function(meta,  mod) {
   mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)] #effects due to heterogeneity rather than chance (p263)
   rownames(mod.sig2) <- NULL
   colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.hetero",  "I2")
+  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
   return(mod.sig2)
 }
 
@@ -968,7 +974,7 @@ CatMod <- function(meta, mod) {
   random <-CatModr(meta,mod)
   random$Q <- fixed$Q
   random$df<- fixed$df
-  random$p.hetero <- fixed$p.hetero
+  random$p.h <- fixed$p.h
   random$I2 <- fixed$I2
   Qf <- CatModfQ(meta,mod) # fixed effect Q
   Qr <- CatModrQ(meta,mod)
@@ -1206,7 +1212,7 @@ MRfit <- function( ...) {
   fit$R2 <- 1 - (fit$RSS / fit$RSS[1])
   fit$R2.change <- c(NA, diff(fit$R2))
   fit$R2[1] <- NA
-  names(fit) <- c("df.Q", "Qw", "predictors", "Qb", "F",  "Pvalue", 
+  names(fit) <- c("df.Q", "Qe", "predictors", "Qb", "F",  "Pvalue", 
                   "R^2", "R^2.change")
   return(fit)
 }
@@ -1233,6 +1239,7 @@ MAregGraph <- function(meta, mod,  method="random",  modname=NULL,  title=NULL, 
   #   Scatterplot with fixed or random effects regression line and where size of points are 
   #   based on study weights--more precise studies are larger. The ggplot2 package outputs the 
   #   rich graphics. 
+  require('ggplot2')
   m <- meta
   m$mod <- mod
   compl<-!is.na(m$mod)
@@ -1305,6 +1312,7 @@ CatModGraph <- function(meta, mod,  method="random",  modname=NULL,  title=NULL)
   #   jitter points for each study and the size of points are based on study weights--more 
   #   precise studies are larger. The ggplot2 package outputs the 
   #   rich graphics. 
+  require('ggplot2')
   m <- meta
   m$mod <- mod
   compl<-!is.na(m$mod)
@@ -1364,6 +1372,7 @@ ForestPlot <- function(meta, method="random", title=NULL) {
   #   Forest plot with omnibus effect size (fixed or random), point for each study 
   #   where size of point is based on the study's precision (based primarily on 
   #   sample size) and 95% confidence intervals. The ggplot2 package outputs the rich graphics.  
+  require('ggplot2')
   meta <- meta 
   meta$id <- factor(meta$id) # , levels=rev(id))                                  
   meta$wi <-  1/meta$var.g
@@ -1447,6 +1456,7 @@ FunnelPlot <- function(meta, method="random",  title=NULL) {
   #   where size of point is based on the study's precision (based primarily on sample 
   #   size) and standard error lines to assess for publication bias. 
   #   The ggplot2 package outputs the rich graphics.     
+  require('ggplot2')
   meta <- MetaG(meta)
   sum.wi <- sum(meta$wi, na.rm=TRUE)       
   sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)    
