@@ -571,7 +571,7 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
   var.T.agg <- 1/sum.wi  # omnibus var.g
   se.T.agg <- sqrt(var.T.agg) 
   z.value  <-  T.agg/se.T.agg
-  p.value <-  round(2*(1-pt(abs(z.value),  df)), 6)  
+  p.value <-  2*pnorm(abs(z.value), lower.tail=FALSE)
   lower.ci <- T.agg-1.96*se.T.agg
   upper.ci <- T.agg + 1.96*se.T.agg
   Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi  # FE homogeneity test
@@ -590,7 +590,7 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
     var.T.agg.tau <-  1/sum.wi.tau 
     se.T.agg.tau <- sqrt(var.T.agg.tau)
     z.valueR  <-  T.agg.tau/se.T.agg.tau
-    p.valueR <-  round(2*(1-pt(abs(z.valueR),  df)), 6)
+    p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
     lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
     upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
   }
@@ -601,7 +601,8 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
     var.T.agg.tau <-  ifelse(unwgtvar.T.agg.tau <= 0, 0, unwgtvar.T.agg.tau)  #if var < 0,  its set to 0
     se.T.agg.tau <- sqrt(var.T.agg.tau)
     z.valueR  <-  T.agg.tau/se.T.agg.tau
-    p.valueR <-  round(2*(1-pt(abs(z.valueR),  df)), 6)
+    p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
+
     lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
     upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
   } 
@@ -626,143 +627,7 @@ OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
 
 ##================= Categorical Moderator Analysis ================##
 
-# Fixed effects intermediate level functions:
-
-f1 <- function(meta) c(k=length(meta$k), sum.wi=sum(meta$wi, na.rm=TRUE), 
-                       sum.wiTi=sum(meta$wiTi, na.rm=TRUE), sum.wiTi2=sum(meta$wiTi2,
-                       na.rm=TRUE))
-f2 <- function(modsum) c(K=modsum$k, ES=modsum$sum.wiTi/modsum$sum.wi, 
-                         Var=1/modsum$sum.wi, 
-                         Q=modsum$sum.wiTi2-(modsum$sum.wiTi^2)/modsum$sum.wi)
-
-# pick_one added 2.17.10 (thanks to Hadley Wickham for assistance)
-
-pick_one <- function(x) {
- if (length(x) == 1) return(x)
- sample(x, 1)
-}
-
-# Intermediate level function: sums relevant es information by each moderator level 
-cat_sum1 <- function(meta, mod) {
-  m <- meta 
-  m$mod <- mod
-  compl<-!is.na(m$mod)
-  meta<-m[compl,]
-  meta$wi <-  1/meta$var.g  # computing weight for each study
-  meta$wiTi <- meta$wi*meta$g  # used to calculate omnibus
-  meta$wiTi2 <- meta$wi*(meta$g)^2
-  meta$k <- length(meta$mod)
-  mod <- meta$mod
-  sum.mod <- by(meta, mod, f1)
-  sums <- cbind(expand.grid(dimnames(sum.mod)), do.call(rbind, sum.mod))
-  return(sums)
-}
-# Intermediate level function: adds an overall category to moderators
-
-cat_sum2 <-  function(meta, mod) {
-  catsum <- cat_sum1(meta, mod)
-  wi <- sum(catsum$sum.wi)
-  wiTi <- sum(catsum$sum.wiTi)
-  wiTi2 <- sum(catsum$sum.wiTi2)
-  k <- sum(catsum$k)
-  mod <- catsum$mod
-  catsums <- rbind(catsum, data.frame(mod="Overall", sum.wi=wi, sum.wiTi=wiTi, 
-                   sum.wiTi2=wiTi2, k=k))
-  return(catsums)
-}
-
-# Intermediate level function: derives mean ES & Var for each group
-
-mod_mean <- function(meta,  mod) {
-  modsum <- cat_sum2(meta,  mod)
-  sum.values <- by(modsum, modsum$mod, f2)
-  sums <- cbind(expand.grid(dimnames(sum.values)), do.call(rbind, sum.values))
-  colnames(sums) <- c("Mod", "K", "ES", "Var", "Q")
-  return(sums)
-}
-
-# Intermediate level function: adds 95% confidence intervals
-mod_sig <- function(meta,  mod) {
-  mod.es <- mod_mean(meta, mod)
-  mod.es$L.95ci <- mod.es$ES-1.96*sqrt(mod.es$Var)
-  mod.es$U.95ci <- mod.es$ES + 1.96*sqrt(mod.es$Var)
-  return(mod.es)}
-
-# Random effects intermediate level functions:
-
-f3 <- function(meta) c(k=length(meta$k), sum.wi.tau=sum(meta$wi.tau, 
-                       na.rm=TRUE),  sum.wiTi.tau=sum(meta$wiTi.tau, na.rm=TRUE), 
-                       sum.wiTi2.tau=sum(meta$wiTi2.tau, na.rm=TRUE))
-f4 <- function(modsum) c(K=modsum$k, ES=modsum$sum.wiTi.tau/modsum$sum.wi.tau, 
-                         Var=1/modsum$sum.wi.tau,  
-                         Q=modsum$sum.wiTi2.tau-(modsum$sum.wiTi.tau^2)/modsum$sum.wi.tau)
-
-# Intermediate level function: sums relevant es information by each moderator level 
-
-cat_sum1R <- function(meta, mod) {
-  m <- meta
-  m$mod <- mod
-  compl<-!is.na(m$mod)
-  meta<-m[compl,]
-  meta$wi <-  1/meta$var.g  # computing weight for each study
-  meta$wi2 <- (1/meta$var.g)^2
-  meta$wiTi <- meta$wi*meta$g  # used to calculate omnibus
-  meta$wiTi2 <- meta$wi*(meta$g)^2
-  meta$k <- meta$mod
-  mod <- meta$mod
-  sum.wi <- sum(meta$wi, na.rm=TRUE)    
-  sum.wi2 <- sum(meta$wi2, na.rm=TRUE)
-  sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)    
-  sum.wiTi2 <- sum(meta$wiTi2, na.rm=TRUE)
-  comp <- sum.wi-sum.wi2/sum.wi
-  Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi                         
-  k <- sum(!is.na(meta$g))                                  
-  df <- k-1      
-  tau <- (Q-(k - 1))/comp  #random effects variance
-  meta$var.tau <- meta$var.g + tau
-  meta$wi.tau <- 1/meta$var.tau
-  meta$wiTi.tau <- meta$wi.tau*meta$g
-  meta$wiTi2.tau <- meta$wi.tau*(meta$g)^2
-  sum.mod <- by(meta, mod, f3)
-  sums <- cbind(expand.grid(dimnames(sum.mod)), do.call(rbind, sum.mod))
-  names(sums)[1] <- "mod"
-  return(sums)
-}
-
-# Intermediate level function: adds an overall category to moderators
-
-cat_sum2R <- function(meta, mod) {
-  catsum <- cat_sum1R(meta, mod)
-  wi.tau <- sum(catsum$sum.wi.tau)
-  wiTi.tau <- sum(catsum$sum.wiTi.tau)
-  wiTi2.tau <- sum(catsum$sum.wiTi2.tau)
-  k <- sum(catsum$k)
-  mod <- meta$mod
-  catsums <- rbind(catsum, data.frame(mod="Overall", sum.wi.tau=wi.tau, 
-  sum.wiTi.tau=wiTi.tau,  sum.wiTi2.tau=wiTi2.tau, k=k))
-  return(catsums)
-}
-
-
-# Intermediate level function: derives mean ES & Var for each group
-
-mod_meanR <- function(meta,  mod) {
-  modsum <- cat_sum2R(meta,  mod)
-  sum.values <- by(modsum, modsum$mod, f4)
-  sums <- cbind(expand.grid(dimnames(sum.values)), do.call(rbind, sum.values))
-  colnames(sums) <- c("Mod", "K", "ES", "Var", "Q")
-  return(sums)
-}
-
-# Intermediate level function: adds 95% confidence intervals
-
-mod_sigR <- function(meta,  mod) {
-  mod.es <- mod_meanR(meta, mod)
-  mod.es$L.95ci <- mod.es$ES-1.96*sqrt(mod.es$Var)
-  mod.es$U.95ci <- mod.es$ES + 1.96*sqrt(mod.es$Var)
-  return(mod.es)}
-
-# Single predictor categorical moderator function (fixed effects)
+# 03-26-10 update: fixed & random effects
 
 CatModf <-  function(meta,  mod) {
   # Computes single predictor categorical moderator analysis. Computations derived from 
@@ -774,25 +639,38 @@ CatModf <-  function(meta,  mod) {
   # Returns:
   #   Fixed effects moderator means per group, k per group, 95% confidence intervals,
   #   z-value, p-value, variances, standard errors, Q, df(Q), and I-squared.
-  mod.sig <- mod_sig(meta, mod)
-  mod.sig$Std.Err <- sqrt(mod.sig$Var)
-  k <- mod.sig[mod.sig$Mod=="Overall", "K"]  
-  df <- k-1
-  mod.sig$z.value <- mod.sig$ES/mod.sig$Std.Err
-  mod.sig$p.value <- round(2*(1-pt(abs(mod.sig$z.value),  df)), 6)
-  mod.sig$L.95ci <- mod.sig$ES-1.96*mod.sig$Std.Err
-  mod.sig$U.95ci  <- mod.sig$ES+1.96*mod.sig$Std.Err
-  mod.sig$df.Q <- mod.sig$K-1
-  mod.sig$p_homog <- ifelse(mod.sig$df.Q==0,  1,  round(pchisq(mod.sig$Q, mod.sig$df.Q, lower=FALSE), 5)) 
-  mod.sig$I2 <- (mod.sig$Q-(mod.sig$K-1))/mod.sig$Q   #I-squared  
-  mod.sig$I2 <- ifelse(mod.sig$I2<0, 0, mod.sig$I2)     
-  mod.sig$I2 <- paste(round(mod.sig$I2*100, 4),  "%",  sep="")
-  mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)] #effects due to heterogeneity rather than chance (p263)
-  rownames(mod.sig2) <- NULL
-  colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
-  return(mod.sig2)
+  meta$mod <- as.character(mod)
+  meta$k <- 1
+  meta$TW <- 1/meta$var.g
+  meta$TWD <- meta$TW*meta$g
+  meta$TWDS <- meta$TWD*meta$g
+  out <- aggregate(meta[c("k","TW","TWD", "TWDS")], by=meta["mod"], FUN=sum)
+  out$mod <- as.character(out$mod)
+  lastrow <- dim(out)[1] + 1
+  out[lastrow, 2:5] <- apply(out[,-1], 2, FUN=sum)
+  out$mod[lastrow] <- "Overall"
+  out$g <- out$TWD/out$TW
+  out$var.g <- 1/out$TW
+  out$se.g <- sqrt(out$var.g)
+  out$Q <- out$TWDS - out$TWD^2/out$TW
+  out$df <- out$k - 1
+  out$z.value <- out$g/out$se.g
+  out$p.value <- 2*pnorm(abs(out$z.value), lower.tail=FALSE)
+  out$L.95ci <- out$g-1.96*out$se.g
+  out$U.95ci  <- out$g+1.96*out$se.g
+  out$p_homog <- ifelse(out$df==0,  1,  pchisq(out$Q, out$df, lower=FALSE)) 
+  out$I2 <- (out$Q-(out$df))/out$Q   #I-squared  
+  out$I2 <- ifelse(out$I2<0, 0, out$I2)     
+  out$I2 <- paste(round(out$I2*100, 4),  "%",  sep="")
+  out$TW <- NULL
+  out$TWD <- NULL
+  out$TWDS <- NULL
+  colnames(out) <- c("Mod", "k", "ES", "var.ES", "SE","Q", "df", "Z",
+                     "p", "CI.lower", "CI.upper", "p.h",  "I2")
+  out <- out[, c(1, 2, 3, 5, 4, 10, 11, 8, 9, 6,7, 12, 13 )] 
+  return(out)
 }
+
 
 # Fixed effect single predictor categorical moderator Q-statistic
 
@@ -839,13 +717,14 @@ CatCompf <- function(meta,  mod, x1, x2,  method= "post.hoc1") {
   # Returns:
   #   Random effects moderator means per group, mean difference (d), variance of difference,
   #   p-value, and 95% confidence intervals. 
-  modsig <- mod_sig(meta, mod)
+  modsig <- CatModf(meta, mod)
+  modsig$Mod <- as.factor(modsig$Mod)
   com1 <- levels(modsig$Mod)[x1]  # first level of moderator
   com2 <- levels(modsig$Mod)[x2]  # second level of moderator
   x1.es <- modsig[modsig$Mod==com1, "ES"]
   x2.es <- modsig[modsig$Mod==com2, "ES"]
-  x1.var <- modsig[modsig$Mod==com1, "Var"]
-  x2.var <- modsig[modsig$Mod==com2, "Var"]
+  x1.var <- modsig[modsig$Mod==com1, "var.ES"]
+  x2.var <- modsig[modsig$Mod==com2, "var.ES"]
   g <- (-1)*x1.es + 1*x2.es  # pg 288 (Cooper et al.,  2009)
   var <- (-1)^2*x1.var + (1)^2*x2.var
   df <- 2-1
@@ -883,61 +762,62 @@ CatCompf <- function(meta,  mod, x1, x2,  method= "post.hoc1") {
   return(fit) 
 }
 
-# Function for planned comparisons between 2 levels of moderator (random effects)
-
 CatModr <-  function(meta,  mod) {
-  # Computes single predictor random effects categorical moderator analysis. 
-  # Computations derived from chapter 15, Cooper et al. (2009). 
+  # Computes single predictor categorical moderator analysis. Computations derived from 
+  # chapter 15, Cooper et al. (2009). 
   # Args:
   #   meta: data.frame with g (standardized mean diff),var.g (variance of g),
   #         n.1 (grp 1 sample size), n.2 (grp 2 sample size).
   #   mod: Categorical moderator variable used for moderator analysis.    
   # Returns:
-  #   Random effects moderator means per group, k per group, 95% confidence intervals,
+  #   Fixed effects moderator means per group, k per group, 95% confidence intervals,
   #   z-value, p-value, variances, standard errors, Q, df(Q), and I-squared.
-  mod.sig <- mod_sigR(meta, mod)
-  mod.sig$Std.Err <- sqrt(mod.sig$Var)
-  k <- sum(!is.na(mod)) 
-  df <-  k-1
-  mod.sig$z.value <- mod.sig$ES/mod.sig$Std.Err
-  mod.sig$p.value <- round(2*(1-pt(abs(mod.sig$z.value),  df)), 6)
-  mod.sig$L.95ci <- mod.sig$ES-1.96*mod.sig$Std.Err
-  mod.sig$U.95ci  <- mod.sig$ES+1.96*mod.sig$Std.Err
-  mod.sig$Q <- mod.sig$Q
-  mod.sig$df.Q <- mod.sig$K-1
-  mod.sig$p_homog <- ifelse(mod.sig$df.Q==0, 1, round(pchisq(mod.sig$Q, mod.sig$df.Q, lower=FALSE), 5)) 
-  mod.sig$I2 <- (mod.sig$Q-(mod.sig$K-1))/mod.sig$Q   #I-squared  
-  mod.sig$I2 <- ifelse(mod.sig$I2<0, 0, mod.sig$I2)     
-  mod.sig$I2 <- paste(round(mod.sig$I2*100, 4),  "%",  sep="")
-  mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)]
-  rownames(mod.sig2) <- NULL
-  colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
-  return(mod.sig2)
-}  
-
-# Intermediate function for random effects Q-statistic test
-
-qrs <- function(meta,  mod) {
-  mod.sig <- mod_sigR(meta, mod)
-  mod.sig$Std.Err <-  sqrt(mod.sig$Var)
-  k <-  mod.sig[mod.sig$Mod=="Overall", "K"] #sum(!is.na(mod)) 
-  df <-  k-1
-  mod.sig$z.value <- mod.sig$ES/mod.sig$Std.Err
-  mod.sig$p.value <- round(2*(1-pt(abs(mod.sig$z.value),  df)), 6)
-  mod.sig$L.95ci <- mod.sig$ES-1.96*mod.sig$Std.Err
-  mod.sig$U.95ci  <- mod.sig$ES+1.96*mod.sig$Std.Err
-  mod.sig$df.Q <- mod.sig$K-1
-  mod.sig$p_homog <-  ifelse(mod.sig$df.Q==0,  1,  round(pchisq(mod.sig$Q, mod.sig$df.Q, lower=FALSE), 5)) #work on this:if(mod.sig$df.Q[mod.sig$df.Q==0]) 1.0000 else pchisq(mod.sig$Q, mod.sig$df.Q, lower=FALSE)
-  mod.sig$I2 <- (mod.sig$Q-(mod.sig$K-1))/mod.sig$Q      #I-squared is prop of total 
-  mod.sig$I2 <- ifelse(mod.sig$I2<0, 0, mod.sig$I2)        #variation in the est of tmt
-  #mod.sig$I2 <- ifelse(mod.sig$p_homog==1, mod.sig$I2==0,mod.sig$I2)
-  mod.sig$I2 <- paste(round(mod.sig$I2*100, 4),  "%",  sep="")
-  mod.sig2 <- mod.sig[, c(1, 2, 3, 6, 7, 9, 10, 4, 8, 5, 11, 12, 13)] #effects due to heterogeneity rather than chance (p263)
-  rownames(mod.sig2) <- NULL
-  colnames(mod.sig2) <- c("Mod", "k", "ES", "CI.lower", "CI.upper",  "Z", 
-  "p",  "var.ES", "SE",  "Q", "df", "p.h",  "I2")
-  return(mod.sig2)
+  meta$mod <- as.character(mod)
+  meta$k <- 1
+  meta$TW <- 1/meta$var.g
+  meta$TWS <- meta$TW^2
+  meta$TWD <- meta$TW*meta$g
+  meta$TWDS <- meta$TWD*meta$g
+  out <- aggregate(meta[c("k","TW","TWS", "TWD", "TWDS")], by=meta["mod"], FUN=sum)
+  out$Q <- out$TWDS - out$TWD^2/out$TW
+  Q <- sum(out$Q)
+  out$df <- out$k - 1
+  df <- sum(out$df)
+  out$c <- out$TW - (out$TWS/out$TW) # 19.37 ch. 19 Borenstein (2009)
+  c <- sum(out$c)
+  TSw <- (Q - df)/c  # 19.38 ch. 19 Borenstein (2009)  
+  tau <- ifelse(TSw < 0, 0, TSw)
+  # add the tau variance to each indiv study & then compute TW again
+  meta$var.tau <- meta$var.g + tau
+  meta$TW.tau <- 1/meta$var.tau
+  meta$TWD.tau <- meta$TW.tau*meta$g
+  meta$TWDS.tau <- meta$TWD.tau*meta$g
+  out <- aggregate(meta[c("k","TW.tau","TWD.tau", 
+                   "TWDS.tau")], by=meta["mod"], FUN=sum)
+  lastrow <- dim(out)[1] + 1
+  out[lastrow, 2:5] <- apply(out[,-1], 2, FUN=sum)
+  out$mod[lastrow] <- "Overall"
+  out$g <- out$TWD.tau/out$TW.tau
+  out$var.g <- 1/out$TW.tau
+  out$g <- out$TWD.tau/out$TW.tau
+  out$se.g <- sqrt(out$var.g)
+  out$Q <- out$TWDS.tau - out$TWD.tau^2/out$TW.tau
+  out$df <- out$k - 1
+  out$z.value <- out$g/out$se.g
+  out$p.value <-    2*pnorm(abs(out$z.value), lower.tail=FALSE)
+  out$L.95ci <- out$g-1.96*out$se.g
+  out$U.95ci  <- out$g+1.96*out$se.g
+  out$p_homog <- ifelse(out$df==0,  1,  pchisq(out$Q, out$df, lower=FALSE)) 
+  out$I2 <- (out$Q-(out$df))/out$Q   # these values are not to be used 
+  out$I2 <- ifelse(out$I2<0, 0, out$I2)     
+  out$I2 <- paste(round(out$I2*100, 4),  "%",  sep="")
+  out$TW.tau <- NULL
+  out$TWD.tau <- NULL
+  out$TWDS.tau <- NULL
+  colnames(out) <- c("Mod", "k", "ES", "var.ES", "SE","Q", "df", "Z",
+                     "p", "CI.lower", "CI.upper", "p.h",  "I2")
+  out <- out[, c(1, 2, 3, 5, 4, 10, 11, 8, 9, 6,7, 12, 13 )] 
+  return(out)
 }
 
 #Q-statistic function (random effects)
@@ -952,7 +832,7 @@ CatModrQ <-  function(meta,  mod) {
   # Returns:
   #   Random effects moderator Q-statistic, Q-within & between, df(Qw & Qb), and 
   #   homogeneity p-value within & between levels.
-  mod.sig <- qrs(meta, mod)
+  mod.sig <- CatModr(meta, mod)
   k <- mod.sig$k[mod.sig$Mod=="Overall"]                         #number of studies
   levels <- length(mod.sig$Mod)-1
   Qb.df <- levels-1 
@@ -960,7 +840,8 @@ CatModrQ <-  function(meta,  mod) {
   Q <- mod.sig$Q[mod.sig$Mod=="Overall"]         #overall heterogeneity Q
   Qw <- sum(mod.sig$Q[!mod.sig$Mod=="Overall"])  #overall within-group heterogeneity statistic
   Qw_p.value <- 1-pchisq(Qw, Qw.df)      
-  Qb <- Q-Qw                                     #overall between-group heterogeneity
+  Qb <- Q-Qw  # overall between-group heterogeneity
+  Q <- Qw + Qb
   Qb_p.value <- 1-pchisq(Qb, Qb.df)
   mod.Qstat <- data.frame(Qb, Qb.df, Qb_p.value)
   names(mod.Qstat) <- c("Qb", "df.b", "p.b")
@@ -982,7 +863,6 @@ CatMod <- function(meta, mod) {
   return(out)
 }
 
-
 # Function for planned comparisons between 2 levels of moderator (random effects)
 
 CatCompr <- function(meta,  mod, x1, x2,  method= "post.hoc1") {
@@ -1001,13 +881,14 @@ CatCompr <- function(meta,  mod, x1, x2,  method= "post.hoc1") {
   # Returns:
   #   Random effects moderator means per group, mean difference (d), variance of difference,
   #   p-value, and 95% confidence intervals. 
-  modsig <- mod_sigR(meta, mod)
+  modsig <- CatModr(meta, mod)
+  modsig$Mod <- as.factor(modsig$Mod)
   com1 <- levels(modsig$Mod)[x1]  # first level of moderator
   com2 <- levels(modsig$Mod)[x2]  # second level of moderator
   x1.es <- modsig[modsig$Mod==com1, "ES"]
   x2.es <- modsig[modsig$Mod==com2, "ES"]
-  x1.var <- modsig[modsig$Mod==com1, "Var"]
-  x2.var <- modsig[modsig$Mod==com2, "Var"]
+  x1.var <- modsig[modsig$Mod==com1, "var.ES"]
+  x2.var <- modsig[modsig$Mod==com2, "var.ES"]
   g <- (-1)*x1.es + 1*x2.es  # pg 288 (Cooper et al.,  2009)
   var <- (-1)^2*x1.var + (1)^2*x2.var
   df <- 2-1
@@ -1073,8 +954,6 @@ CatComp <- function(meta, mod, x1=NULL, x2=NULL,  method="post.hoc1") {
   return(out)
 }
 
-
-
 # multifactor cat mod analysis [IN PROGRESS]:
 #add relevant columns and it will works fine!
 #MFCatMod <- function(meta, mod1, mod2) {
@@ -1138,12 +1017,12 @@ MAreg1 <- function(meta, mod, method="random") {  # Single predictor meta-regres
     df <- anova(reg)["Residuals",  "Df"]
     ms.error <- anova(reg)["Residuals",  "Mean Sq"]
     t.crit <- qt(.975,  df)
-    newSE <- round(summary(reg)$coef[, 2]/sqrt(ms.error), 6)  # 15.20 
-    Bs <- round(summary(reg)$coef[, 1], 6)
-    t.adj <- round(Bs/newSE, 6)
-    p.adj <- round(2*(1-pt(abs(t.adj),  df)), 6)
-    lower.ci <- round(Bs-(t.crit*newSE), 6)  # 95% CI
-    upper.ci <- round(Bs + (t.crit*newSE), 6)  # 95% CI
+    newSE <- summary(reg)$coef[, 2]/sqrt(ms.error)  # 15.20 
+    Bs <- summary(reg)$coef[, 1]
+    t.adj <- Bs/newSE
+    p.adj <- 2*pnorm(abs(t.adj), lower.tail=FALSE)
+    lower.ci <- Bs-(t.crit*newSE)  # 95% CI
+    upper.ci <- Bs + (t.crit*newSE)  # 95% CI
     modelfit <- MRfit(reg0,reg)   # internal function to assess fit
     #sig <- symnum(p.adj,  corr = FALSE,  na = FALSE,  
     #              cutpoints <- c(0,  0.001,  0.01,  0.05,  0.1,  1), 
@@ -1156,12 +1035,13 @@ MAreg1 <- function(meta, mod, method="random") {  # Single predictor meta-regres
     df  <- anova(reg)["Residuals",  "Df"]
     ms.error <- anova(reg)["Residuals",  "Mean Sq"]
     t.crit <- qt(.975,  df)
-    newSE  <- round(summary(reg)$coef[, 2]/sqrt(ms.error), 6)  # 15.20 
-    Bs  <- round(summary(reg)$coef[, 1], 6) 
-    t.adj <- round(Bs/newSE, 6)
-    p.adj <- round(2*(1-pt(abs(t.adj),  df)), 6)
-    lower.ci <- round(Bs-(t.crit*newSE), 6)  # 95% CI
-    upper.ci <- round(Bs + (t.crit*newSE), 6)  # 95% CI
+    newSE  <- summary(reg)$coef[, 2]/sqrt(ms.error)  # 15.20 
+    Bs  <- summary(reg)$coef[, 1] 
+    t.adj <- Bs/newSE
+   # p.adj <- 2*(1-pt(abs(t.adj),  df))
+    p.adj <- 2*pnorm(abs(t.adj), lower.tail=FALSE)
+    lower.ci <- Bs-(t.crit*newSE) # 95% CI
+    upper.ci <- Bs + (t.crit*newSE)  # 95% CI
     modelfit <- MRfit(reg0,reg)
     #sig <- symnum(p.adj,  corr = FALSE,  na = FALSE,  
     #              cutpoints <- c(0,  0.001,  0.01,  0.05,  0.1,  1), 
@@ -1192,11 +1072,11 @@ MAreg2  <-  function(reg) {  # Multivariate meta-regression
   ms.error  <-  anova(reg)["Residuals",  "Mean Sq"]
   t.crit  <-  qt(.975,  df)
   newSE  <-  summary(reg)$coef[, 2]/sqrt(ms.error)  
-  Bs  <-  round(summary(reg)$coef[, 1], 4)
-  t.adj  <-  round(Bs/newSE, 4)
-  p.adj  <-  round(2*(1-pt(abs(t.adj),  df)), 4)
-  lower.ci <- round(Bs-(t.crit*newSE), 4)     #95% CI
-  upper.ci <- round(Bs + (t.crit*newSE), 4)     #95% CI
+  Bs  <-  summary(reg)$coef[, 1]
+  t.adj  <-  Bs/newSE
+  p.adj  <-  2*pnorm(abs(t.adj), lower.tail=FALSE)
+  lower.ci <- Bs-(t.crit*newSE)     #95% CI
+  upper.ci <- Bs + (t.crit*newSE)     #95% CI
   #sig <- symnum(p.adj,  corr = FALSE,  na = FALSE,  
   #           cutpoints <- c(0,  0.001,  0.01,  0.05,  0.1,  1), 
   #           symbols <- c("***",  "**",  "*",  ".",  " ")) 
@@ -1397,7 +1277,7 @@ ForestPlot <- function(meta, method="random", title=NULL) {
      forest <- ggplot(meta,  aes(y = id,x=g))+       # aes(y = factor(id, levels=rev(levels(id))),  x = g))  +  
                     geom_vline(xintercept=0) + 
                     geom_point(data=omnibus, colour="red", size=8, shape=23) + 
-                    geom_point(aes(size=wi)) + 
+                    #geom_point(aes(size=wi)) + 
                     opts(title=title,  legend.position="none") + 
                     geom_errorbarh(data=meta,aes(xmin = l.ci95,  xmax=u.ci95), size=.3, alpha=.6) + 
                     geom_vline(colour="red", linetype=2,  xintercept=T.agg) + 
@@ -1428,7 +1308,7 @@ ForestPlot <- function(meta, method="random", title=NULL) {
     forest <- ggplot(meta,  aes(y = id,x=g))+    #factor(id, levels=rev(levels(id))),  x = g))  +  
                   geom_vline(xintercept=0) + 
                   geom_point(data=omnibus.tau, colour="red",  size=8,  shape=23) + 
-                  geom_point(aes(size=wi.tau)) + 
+                  #geom_point(aes(size=wi.tau)) + 
                   opts(title=title,  legend.position="none") + 
                   #geom_point(data=meta,aes(size=wi.tau)) + 
                   geom_errorbarh(data=meta,aes(xmin = l.ci95,  xmax=u.ci95), size=.3, alpha=.6) + 
@@ -1473,7 +1353,7 @@ FunnelPlot <- function(meta, method="random",  title=NULL) {
     funnel <- ggplot(meta,  aes(y = se,  x = g))  +  
                     geom_vline(colour="black", linetype=1, 
                     xintercept=omnibus) + 
-                    geom_point(aes(size=wi)) + 
+                    #geom_point(aes(size=wi)) + 
                     opts(title=title,  legend.position="none") + 
                     xlim(-1.7, 1.7) + 
                     ylim(.028, .5) + 
@@ -1498,7 +1378,7 @@ FunnelPlot <- function(meta, method="random",  title=NULL) {
     funnel <- ggplot(meta,  aes(y = se.tau,  x = g))  +  
                     geom_vline(colour="black", linetype=1, 
                     xintercept=omnibus.tau) + 
-                    geom_point(aes(size=wi.tau)) + 
+                    #geom_point(aes(size=wi.tau)) + 
                     opts(title=title,  legend.position="none") + 
                     #xlim(-2, 2) + 
                     #ylim(.028, .5) + 
