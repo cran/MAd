@@ -4,7 +4,7 @@
 Standardized Mean Difference (d) Statistic to Unbiased Standardized Mean Difference (g)
 }
 \description{
-Eliminates the small upward bias of d to provide an unbiased estimate of the population effect size parameter (g). This procedure will compute g for a single value of d. See \code{MeanDiff}, \code{MeanDiffd}, or \code{MeanDiffg} for computing g for all values of d simultaneously (link at bottom of section).
+Eliminates the small upward bias of d to provide an unbiased estimate of the population effect size parameter (g). This procedure will compute g for a single value of d. 
 }
 \usage{
 d_to_g(d, var.d, n.1, n.2)
@@ -29,9 +29,5 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
 \references{Borenstein (2009). Effect sizes for continuous data. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 279-293). New York: Russell Sage Foundation.
 }
-\seealso{
-\code{\link{MeanDiff}},
-\code{\link{MeanDiffd}},
-\code{\link{MeanDiffg}},
-}
+
 \keyword{ arith }

@@ -1,5 +1,5 @@
-\name{Rho_TU}
-\alias{Rho_TU}
+\name{wd.macat}
+\alias{wd.macat}
 \title{Internal anRpackage objects}
 \description{Internal anRpackage objects.}
 \details{These are not to be called by the user.}

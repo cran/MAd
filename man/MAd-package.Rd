@@ -10,8 +10,8 @@
 \tabular{ll}{
 Package: \tab MAd\cr
 Type: \tab Package\cr
-Version: \tab 0.4\cr
-Date: \tab 2010-03-29\cr
+Version: \tab 0.6\cr
+Date: \tab 2010-06-21\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -32,11 +32,11 @@ This package contains all the relevant functions to calculate fixed and random e
 
 4. Moderator Analyses:
 
-There are a host of user-friendly functions to compute fixed and random effects moderator analyses. These include single and multiple predictor models for both categorical and continuous moderator data. 
+There are user-friendly functions to compute fixed and random effects moderator analyses. These include single and multiple predictor models for both categorical and continuous moderator data. 
 
 5. Graphics:
 
-This package has a variety of functions visually representing data. This includes a variety of meta-analytic graphics, including standard forest plots, funnel plots, boxplots, meta-regression scatterplots, and multi-predictor meta-regression graphs.
+This package has a variety of functions visually representing data. This includes boxplots and meta-regression scatterplots.
 }
 \author{AC Del Re & William T. Hoyt
 
@@ -48,21 +48,25 @@ Gleser & Olkin (1994). Stochastically dependent effect sizes. In H. Cooper, & L.
   
 Gleser & Olkin (2009). Stochastically dependent effect sizes. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 357-376). New York: Russell Sage Foundation.
 
+ Viechtbauer, W (2010). metafor: Meta-Analysis Package for
+  R. R package version 1.1-0. http://CRAN.R-project.org/package=metafor
+
 Wampold, B. E., Mondin, G. W., Moody, M., Stich, F., Benson, K., & Ahn, H. (1997). A meta-analysis of outcome studies comparing bona fide psychotherapies: Empiricially, 'all must have prizes.' \emph{Psychological Bulletin, 122(3)}, 203-215.
 }
 \keyword{ package }
 \examples{ 
 # Examples for each broad area:
 
-id<-c(1, 1:19)
-n.1<-c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
+id <- c(1, 1:19)
+n.1 <- c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
 n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
 g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,
-.51,.40,.34,.42,1.16)
+       .51,.40,.34,.42,1.16)
 var.g <- c(.08,.06,.03,.04,.09,.04,.009,.033,.0058,.018,.011,.027,.026,.0040,
-.049,.0051,.040,.034,.0042,.016)
-mod<-factor(c(rep(c(1,1,2,3),5)))
-df<-data.frame(id, n.1,n.2, g, var.g,mod)
+           .049,.0051,.040,.034,.0042,.016)
+mod <- factor(c(rep(c(1,1,2,3),5)))
+mods2 <- c(rep(1:5,4))
+df <- data.frame(id, n.1, n.2, g, var.g, mod, mods2)
   
 
 # 1. Computations to Mean Differences:
@@ -78,7 +82,7 @@ lor_to_d(.9070,.0676)
 
 # 2. Within-Study Aggregation of Effect Sizes: 
 
-MetaG(df)  
+agg(id = id, g = g, var = var.g, n.1 = n.1, n.2 = n.2, data=df) 
 
 # where df = data.frame with columns for id, g (unbiased standardized
 # mean difference), var.g (variance of g), n.1 (sample size of group
@@ -87,7 +91,7 @@ MetaG(df)
 
 # 3. Fixed and Random Effects Omnibus Analysis
 
-OmnibusES(df) 
+omni(g = g, var = var.g, data = df, type="weighted", method = "random")
 
 # where df = data.frame with columns for id, g (unbiased standardized
 # mean difference), var.g (variance of g), n.1 (sample size of group
@@ -95,18 +99,18 @@ OmnibusES(df)
  
 # 4. Moderator Analyses:
 
-MAreg1(df, df$mod) 
+# Random effects
+mareg(g~ mod + mods2, var = var.g, method = "REML", data = df) 
  
-# where df = data.frame with columns for id, g (unbiased standardized
-# mean difference), var.g (variance of g), n.1 (sample size of group
-# one), and n.2 (sample size of comparison group).  df$mod = moderator
-# variable of interest.
+# where df = data.frame with columns  g (unbiased standardized
+# mean difference), var (variance of g), and moderators.
 
 # 5. Graphics:
 
-\dontrun{MAregGraph(df, df$mod)  }
+\dontrun{plotcon(g = g, var = var.g, mod = mod, data = df, method= "random", 
+modname= "Moderator") }
 
-# same as above but will output a meta-regression graph
+
 }
 \seealso{
 \bold{RcmdrPlugin.MAd} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MAd};
@@ -115,5 +119,7 @@ MAreg1(df, df$mod)
 
 \bold{RcmdrPlugin.MAc} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MAc};
 
-\bold{compute.es} package:  \url{http://CRAN.R-project.org/package=compute.es}
+\bold{compute.es} package:  \url{http://CRAN.R-project.org/package=compute.es};
+
+\bold{metafor} package:  \url{http://CRAN.R-project.org/package=metafor}
 }

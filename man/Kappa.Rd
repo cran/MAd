@@ -20,5 +20,5 @@ Kappa(rater1, rater2)
 
 Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
-\keyword{ models }
+
 
