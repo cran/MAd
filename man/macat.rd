@@ -14,7 +14,7 @@ macat(g, var, mod, data, method= "random")
 }
   \item{mod}{Categorical moderator variable used for moderator analysis.
 } 
- \item{method}{ Default is \code{random} (Restricted-Maximal Likelihood), which is the standard random effects method. For fixed effects, use \code{fixed}. 
+ \item{method}{ Default is \code{random}. For fixed effects, use \code{fixed}. 
 }
 
  \item{data}{\code{data.frame} with values above.
@@ -52,17 +52,17 @@ macat(g, var, mod, data, method= "random")
 }
 \item{Q}{ Q-statistic overall.
 } 
-\item{Qw}{ Q-within (measure of within-group heterogeneity).
+\item{QE}{ Q-within (or error). Measure of within-group heterogeneity).
 }
-\item{df.w}{ Degrees of freedom for Q-within.
+\item{QE.df}{ Degrees of freedom for Q-within.
 }
-\item{p.w}{ Q-within p-value (for homogeneity).
+\item{QEp}{ Q-within p-value (for homogeneity).
 }
-\item{Qb}{ Q-between (measure of between-group heterogeneity)
+\item{QM}{ Q-between (or model). Measure of model fit.
 }
-\item{df.b}{ Degrees of freedom for Q-between.
+\item{QM.df}{ Degrees of freedom for Q-between.
 }
-\item{p.b}{ Q-between p-value (for homogeneity)
+\item{QMp}{ Q-between p-value (for homogeneity)
 } 
 }
 \references{Konstantopoulos & Hedges (2009). Analyzing effect sizes: Fixed-effects models. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 279-293). New York: Russell Sage Foundation.  

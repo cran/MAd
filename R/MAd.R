@@ -44,19 +44,19 @@ summary.mareg <- function(object, ...) {
   p <- object$pval
   QE <- object$QE
   QEp <- object$QEp
+  QE.df <- round(object$k - object$p, 0)
   QM <- object$QM
   QMp <- object$QMp
+  QM.df <- round(object$m, 0)
   tau2_empty <- object$tau2_empty
   tau2 <- object$tau2
   R2 <- object$R2
   table <- cbind(b, se, z, ci.lower, ci.upper, p)
-  colnames(table) <- c("Estimate", "Std.Err", "z value", "ci.u",
+  colnames(table) <- c("estimate", "se", "z", "ci.u",
     "ci.l", "Pr(>|z|)")
   #rownames(table) <- object$predictors
-  table2 <- cbind(QE, QEp, QM, QMp)
-  colnames(table2) <- c("QE", "QEp", "QM", "QMp")
-  #table3 <- cbind(tau2_empty, tau2, R2)
-  #colnames(table3) <- c("tau2_empty", "tau2", "R2")
+  table2 <- cbind(QE, QE.df, QEp, QM, QM.df, QMp)
+  colnames(table2) <- c("QE", "QE.df", "QEp", "QM", "QM.df", "QMp")
   model <- list(coef = table, fit = table2, tau2_empty=tau2_empty,
    tau2=tau2, R2=R2)
   rownames(model$fit) <-NULL
@@ -68,11 +68,7 @@ print.summary.mareg <- function(x, ...) {
   cat("\n Model Results:", "", "\n", "\n")
   printCoefmat(x$coef, signif.stars = TRUE)
   cat("\n Heterogeneity & Fit:", "", "\n" ,"\n")
-  printCoefmat(x$fit, signif.stars = TRUE)
-  cat("\n Explained Variance:", "", "\n")
-  cat("\n Tau^2     (total):", round(x$tau2_empty,4))
-  cat("\n Tau^2     (model):", round(x$tau2,4))
-  cat("\n R^2 (% expl. var.):", round(x$R2,2), "\n")
+  print(round(x$fit,4))
   invisible(x)
 }
 
@@ -108,9 +104,28 @@ mareg.default <- function(formula, var, data, method = "REML",
     return(model)
 } 
 
+print.summary.mareg <- function(x, ...) {
+  cat("\n Model Results:", "", "\n", "\n")
+  printCoefmat(x$coef, signif.stars = TRUE)
+  cat("\n Heterogeneity & Fit:", "", "\n" ,"\n")
+  printCoefmat(x$fit, signif.stars = TRUE)
+  invisible(x)
+}
+
+r2 <- function(x) {
+   UseMethod("r2")
+}
+
+r2.mareg <- function(x) {
+  cat("\n Explained Variance:", "", "\n")
+  cat("\n Tau^2      (total):", round(x$tau2_empty,4))
+  cat("\n Tau^2      (model):", round(x$tau2,4))
+  cat("\n R^2 (% expl. var.):", round(x$R2,2), "\n")
+}
+
+
 # function to print objects to Word
 wd <- function(object, get = FALSE, new = FALSE, ...) {
-  require('R2wd', quietly = TRUE)
   UseMethod("wd")
 }
 
@@ -220,12 +235,12 @@ wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
     p.h <- x1$p.h
     I2 <- x1$I2
     Qoverall <- x2$Q
-    Qw <- x2$Qw
-    df.w <- x2$df.w
-    p.w <- x2$p.w
-    Qb <- x2$Qb
-    df.b <- x2$df.b
-    p.b <- x2$p.b
+    QE <- x2$Qw
+    QE.df <- x2$df.w
+    QEp <- x2$p.w
+    QM <- x2$Qb
+    QM.df <- x2$df.b
+    QMp <- x2$p.b
     results1 <- round(data.frame(estimate, var, se, ci.l, ci.u, z, p,
       Q, df, p.h),4)
     #results <- formatC(table, format="f", digits=digits)
@@ -233,7 +248,7 @@ wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
     results1$I2 <- x1$I2
     results1$mod <- x1$mod
     results1 <- results1[c(13,11, 1:10,12)]
-    results2 <- round(data.frame(Q=Qoverall, Qw, df.w, p.w, Qb, df.b, p.b),4)
+    results2 <- round(data.frame(Q=Qoverall, QE, QE.df, QEp, QM, QM.df, QMp),4)
     results1[2:12] <-round(results1[2:12],3)
     title <- wdHeading(level = 2, " Categorical Moderator Results:")
     obj1 <- wdTable(results1)
@@ -788,7 +803,7 @@ if(!is.null(mod)) {
  
 
 # required inputs are g, var.g and will output weights, ci, etc
-weights <-  function(g, var.g, data) {  
+wgts <-  function(g, var.g, data) {  
   call <- match.call()
   mf <- match.call(expand.dots = FALSE)
   args <- match(c("g", "var.g", "data"),
@@ -926,10 +941,10 @@ omni <-  function(g, var, data, type="weighted", method = "random") {
   } 
   Fixed <- list(k=k, estimate=T.agg,  var=var.T.agg,  se=se.T.agg, 
                 ci.l=lower.ci,  ci.u=upper.ci,  z=z.value,  p=p.value,
-                Q=Q, df.Q=df, p.h=p.homog, I2=I2, call=call)
+                Q=Q, df.Q=df, Qp=p.homog, I2=I2, call=call)
   Random <- list(k=k, estimate=T.agg.tau, var=var.T.agg.tau,  
                  se=se.T.agg.tau,  ci.l=lower.ci.tau, ci.u=upper.ci.tau, 
-                 z=z.valueR, p=p.valueR, Q=Q, df.Q=df,  p.h=p.homog, 
+                 z=z.valueR, p=p.valueR, Q=Q, df.Q=df,  Qp=p.homog, 
                  I2=I2, call=call)
   if(method == "fixed") {
     omni.data <- Fixed
@@ -954,13 +969,13 @@ print.omni <- function (x, digits = 4, ...){
     p <- x$p
     Q <- x$Q
     df.Q <- x$df.Q
-    p.h <- x$p.h
+    Qp <- x$Qp
     I2 <- x$I2
     results1 <- round(data.frame(estimate, var, se,ci.l, ci.u, z, p),4)
     #results <- formatC(table, format="f", digits=digits)
     results1$k <- x$k
     results1 <- results1[c(8,1:7)]
-    results2 <- round(data.frame(Q, df.Q, p.h),4)
+    results2 <- round(data.frame(Q, df.Q, Qp),4)
     results2$I2 <- x$I2
     cat("\n Model Results:", "", "\n", "\n")
     print(results1)
@@ -1151,12 +1166,12 @@ print.macat <- function (x, digits = 4, ...){
     p.h <- x1$p.h
     I2 <- x1$I2
     Qoverall <- x2$Q
-    Qw <- x2$Qw
-    df.w <- x2$df.w
-    p.w <- x2$p.w
-    Qb <- x2$Qb
-    df.b <- x2$df.b
-    p.b <- x2$p.b
+    QE <- x2$Qw
+    QE.df <- x2$df.w
+    QEp <- x2$p.w
+    QM <- x2$Qb
+    QM.df <- x2$df.b
+    QMp <- x2$p.b
     results1 <- round(data.frame(estimate, var, se, ci.l, ci.u, z, p,
       Q, df, p.h),4)
     #results <- formatC(table, format="f", digits=digits)
@@ -1164,7 +1179,7 @@ print.macat <- function (x, digits = 4, ...){
     results1$I2 <- x1$I2
     results1$mod <- x1$mod
     results1 <- results1[c(13,11, 1:10,12)]
-    results2 <- round(data.frame(Q=Qoverall, Qw, df.w, p.w, Qb, df.b, p.b),4)
+    results2 <- round(data.frame(Q=Qoverall, QE, QE.df, QEp, QM, QM.df, QMp),4)
     cat("\n Model Results:", "", "\n", "\n")
     print(results1)
     cat("\n Heterogeneity:", "", "\n","\n")
@@ -1661,6 +1676,140 @@ Kappa <- function(rater1, rater2)  {
   cat("weak agreement:      kappa < .40", "", "\n","\n")
   return(kappa)
 }
+
+# icc (created by Matthias Gamer for the 'irr' package)
+icc <- function (ratings, model = c("oneway", "twoway"), type = c("consistency", 
+    "agreement"), unit = c("single", "average"), r0 = 0, conf.level = 0.95) 
+{
+    ratings <- as.matrix(na.omit(ratings))
+    model <- match.arg(model)
+    type <- match.arg(type)
+    unit <- match.arg(unit)
+    alpha <- 1 - conf.level
+    ns <- nrow(ratings)
+    nr <- ncol(ratings)
+    SStotal <- var(as.numeric(ratings)) * (ns * nr - 1)
+    MSr <- var(apply(ratings, 1, mean)) * nr
+    MSw <- sum(apply(ratings, 1, var)/ns)
+    MSc <- var(apply(ratings, 2, mean)) * ns
+    MSe <- (SStotal - MSr * (ns - 1) - MSc * (nr - 1))/((ns - 
+        1) * (nr - 1))
+    if (unit == "single") {
+        if (model == "oneway") {
+            icc.name <- "ICC(1)"
+            coeff <- (MSr - MSw)/(MSr + (nr - 1) * MSw)
+            Fvalue <- MSr/MSw * ((1 - r0)/(1 + (nr - 1) * r0))
+            df1 <- ns - 1
+            df2 <- ns * (nr - 1)
+            p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+            FL <- (MSr/MSw)/qf(1 - alpha/2, ns - 1, ns * (nr - 
+                1))
+            FU <- (MSr/MSw) * qf(1 - alpha/2, ns * (nr - 1), 
+                ns - 1)
+            lbound <- (FL - 1)/(FL + (nr - 1))
+            ubound <- (FU - 1)/(FU + (nr - 1))
+        }
+        else if (model == "twoway") {
+            if (type == "consistency") {
+                icc.name <- "ICC(C,1)"
+                coeff <- (MSr - MSe)/(MSr + (nr - 1) * MSe)
+                Fvalue <- MSr/MSe * ((1 - r0)/(1 + (nr - 1) * 
+                  r0))
+                df1 <- ns - 1
+                df2 <- (ns - 1) * (nr - 1)
+                p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+                FL <- (MSr/MSe)/qf(1 - alpha/2, ns - 1, (ns - 
+                  1) * (nr - 1))
+                FU <- (MSr/MSe) * qf(1 - alpha/2, (ns - 1) * 
+                  (nr - 1), ns - 1)
+                lbound <- (FL - 1)/(FL + (nr - 1))
+                ubound <- (FU - 1)/(FU + (nr - 1))
+            }
+            else if (type == "agreement") {
+                icc.name <- "ICC(A,1)"
+                coeff <- (MSr - MSe)/(MSr + (nr - 1) * MSe + 
+                  (nr/ns) * (MSc - MSe))
+                a <- (nr * r0)/(ns * (1 - r0))
+                b <- 1 + (nr * r0 * (ns - 1))/(ns * (1 - r0))
+                Fvalue <- MSr/(a * MSc + b * MSe)
+                a <- (nr * coeff)/(ns * (1 - coeff))
+                b <- 1 + (nr * coeff * (ns - 1))/(ns * (1 - coeff))
+                v <- (a * MSc + b * MSe)^2/((a * MSc)^2/(nr - 
+                  1) + (b * MSe)^2/((ns - 1) * (nr - 1)))
+                df1 <- ns - 1
+                df2 <- v
+                p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+                FL <- qf(1 - alpha/2, ns - 1, v)
+                FU <- qf(1 - alpha/2, v, ns - 1)
+                lbound <- (ns * (MSr - FL * MSe))/(FL * (nr * 
+                  MSc + (nr * ns - nr - ns) * MSe) + ns * MSr)
+                ubound <- (ns * (FU * MSr - MSe))/(nr * MSc + 
+                  (nr * ns - nr - ns) * MSe + ns * FU * MSr)
+            }
+        }
+    }
+    else if (unit == "average") {
+        if (model == "oneway") {
+            icc.name <- paste("ICC(", nr, ")", sep = "")
+            coeff <- (MSr - MSw)/MSr
+            Fvalue <- MSr/MSw * (1 - r0)
+            df1 <- ns - 1
+            df2 <- ns * (nr - 1)
+            p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+            FL <- (MSr/MSw)/qf(1 - alpha/2, ns - 1, ns * (nr - 
+                1))
+            FU <- (MSr/MSw) * qf(1 - alpha/2, ns * (nr - 1), 
+                ns - 1)
+            lbound <- 1 - 1/FL
+            ubound <- 1 - 1/FU
+        }
+        else if (model == "twoway") {
+            if (type == "consistency") {
+                icc.name <- paste("ICC(C,", nr, ")", sep = "")
+                coeff <- (MSr - MSe)/MSr
+                Fvalue <- MSr/MSe * (1 - r0)
+                df1 <- ns - 1
+                df2 <- (ns - 1) * (nr - 1)
+                p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+                FL <- (MSr/MSe)/qf(1 - alpha/2, ns - 1, (ns - 
+                  1) * (nr - 1))
+                FU <- (MSr/MSe) * qf(1 - alpha/2, (ns - 1) * 
+                  (nr - 1), ns - 1)
+                lbound <- 1 - 1/FL
+                ubound <- 1 - 1/FU
+            }
+            else if (type == "agreement") {
+                icc.name <- paste("ICC(A,", nr, ")", sep = "")
+                coeff <- (MSr - MSe)/(MSr + (MSc - MSe)/ns)
+                a <- r0/(ns * (1 - r0))
+                b <- 1 + (r0 * (ns - 1))/(ns * (1 - r0))
+                Fvalue <- MSr/(a * MSc + b * MSe)
+                a <- (nr * coeff)/(ns * (1 - coeff))
+                b <- 1 + (nr * coeff * (ns - 1))/(ns * (1 - coeff))
+                v <- (a * MSc + b * MSe)^2/((a * MSc)^2/(nr - 
+                  1) + (b * MSe)^2/((ns - 1) * (nr - 1)))
+                df1 <- ns - 1
+                df2 <- v
+                p.value <- pf(Fvalue, df1, df2, lower.tail = FALSE)
+                FL <- qf(1 - alpha/2, ns - 1, v)
+                FU <- qf(1 - alpha/2, v, ns - 1)
+                lbound <- (ns * (MSr - FL * MSe))/(FL * (MSc - 
+                  MSe) + ns * MSr)
+                ubound <- (ns * (FU * MSr - MSe))/(MSc - MSe + 
+                  ns * FU * MSr)
+            }
+        }
+    }
+    rval <- structure(list(subjects = ns, raters = nr, model = model, 
+        type = type, unit = unit, icc.name = icc.name, value = coeff, 
+        r0 = r0, Fvalue = Fvalue, df1 = df1, df2 = df2, p.value = p.value, 
+        conf.level = conf.level, lbound = lbound, ubound = ubound), 
+        class = "icclist")
+    return(rval)
+}
+
+
+
 
 ##====== Additional Functions ========##
 

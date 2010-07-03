@@ -4,7 +4,7 @@
 \docType{package}
 \title{Meta-Analysis with Mean Differences
 }
-\description{ This package contains a variety of functions relevant to conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset) based on recommended procedures by Gleser & Olkin (1994; 2009), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data in an elegant manner. 
+\description{ This package contains a variety of functions relevant to conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset) based on recommended procedures by Gleser & Olkin (1994; 2009), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data. 
 }
 \details{
 \tabular{ll}{
@@ -24,7 +24,7 @@ There are a variety of functions to compute d (standardized mean difference) and
 
 2. Within-Study Aggregation of Effect Sizes:
 
-This package contains functions that have automated (i.e., will compute for all studies simultaneously) the process of aggregating within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). These functions default the correlation between within-study effect sizes at .50 (Wampold et al., 1997) and will compute the correct aggregated effect size for all studies. This default of .50 is adjustable.  \code{MAd} aggregation functions implement Gleser & Olkin (1994; 2009) recommendations for aggregating dependent correlations. To our knowledge, this is the first statistical package/program that has explicitly utilized and automated this aggregation procedure, which has a dual effect of saving the researcher \bold{substantial} time while increasing the accuracy of their analyses. 
+This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable.  This \code{MAd} aggregation function implements Gleser & Olkin's (1994; 2009) recommended procedures for aggregating dependent effect sizes. To our knowledge, this is the first statistical package/program to explicitly utilize and automate this type of aggregation procedure, which has a dual effect of saving the researcher \bold{substantial} time while improving the accuracy of their analyses. 
 
 3. Fixed and Random Effects Omnibus Analysis: 
 
@@ -37,6 +37,11 @@ There are user-friendly functions to compute fixed and random effects moderator 
 5. Graphics:
 
 This package has a variety of functions visually representing data. This includes boxplots and meta-regression scatterplots.
+
+6. Sample of Additional Functions:
+
+Export MA output to nicely formatted Word tables.
+
 }
 \author{AC Del Re & William T. Hoyt
 
@@ -110,7 +115,20 @@ mareg(g~ mod + mods2, var = var.g, method = "REML", data = df)
 \dontrun{plotcon(g = g, var = var.g, mod = mod, data = df, method= "random", 
 modname= "Moderator") }
 
+# Additional Functions
 
+# Export MA output to nicely formatted Word tables.
+
+# install R2wd
+# install.packages('R2wd', dependencies = TRUE)
+
+# mareg fuction
+
+temp <- mareg(g~ mod + mods2, var = var.g, method = "REML", data = df)
+
+# Export data to Word in formatted table
+
+#  wd(temp, get = TRUE, new = TRUE)
 }
 \seealso{
 \bold{RcmdrPlugin.MAd} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MAd};

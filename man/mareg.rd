@@ -12,7 +12,7 @@ mareg(formula, var, data, method = "REML", subset,  ...)
 }
   \item{var}{ Variance of g.
   }
-\item{data}{Aggregated \code{data.frame} (see \code{ComplData} function for setting up the dataset for these analyses) with id, g (unbiased standardized mean difference), var.g (variance of g) for each study. 
+\item{data}{Aggregated \code{data.frame} (see \code{agg} function for setting up the dataset for these analyses) with id, g (unbiased standardized mean difference), var.g (variance of g) for each study. 
 }
   \item{method}{ Default is \code{REML} (Restricted-Maximal Likelihood), which is the standard random effects method. For fixed effects, use \code{FE}. Other options are specified in the \code{metafor} package manual ('rma' function).
 }
@@ -35,14 +35,14 @@ mareg(formula, var, data, method = "REML", subset,  ...)
 }
 \item{ci.u}{ Upper 95\% confidence interval.
 }
-\item{p}{ Significance level.
+\item{Pr(>|z|)}{ p-value (significance level).
 }
 }
 \references{Wolfgang Viechtbauer (2010). metafor: Meta-Analysis Package for
   R. R package version 1.1-0. http://CRAN.R-project.org/package=metafor
 }
 \seealso{
-\code{\link{wd}}
+\code{\link{wd}},
 \code{\link{plotcon}}
 }
 \examples{

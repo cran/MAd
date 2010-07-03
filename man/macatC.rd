@@ -18,7 +18,7 @@ macatC(x1, x2, g, var, mod, data, method= "random", type= "post.hoc")
 }
   \item{mod}{Categorical moderator variable used for moderator analysis.
 } 
- \item{method}{ Default is \code{random} (Restricted-Maximal Likelihood), which is the standard random effects method. For fixed effects, use \code{fixed}.
+ \item{method}{ Default is \code{random}. For fixed effects, use \code{fixed}.
  }
   \item{type}{\code{post.hoc} assumes the comparison was not planned prior to conducting the meta analysis. The a priori option, \code{planned}, assumes the researcher planned to conduct the analysis a priori. Default is \code{post.hoc} using the Scheffe post hoc statistical method. 
 } 

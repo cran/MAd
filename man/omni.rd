@@ -15,7 +15,7 @@ omni(g, var, data, type="weighted", method = "random")
  
   \item{type}{\code{weighted} or \code{unweighted}. Default is \code{weighted}. Use the \code{unweighted} variance method only if Q is rejected and is very large relative to the number of studies in the meta-analysis. 
 }
- \item{method}{ Default is \code{random} (Restricted-Maximal Likelihood), which is the standard random effects method. For fixed effects, use \code{fixed}. 
+ \item{method}{ Default is \code{random}. For fixed effects, use \code{fixed}. 
 }
 \item{data}{\code{data.frame} with above values.
 }
@@ -41,7 +41,7 @@ Fixed and random effects:
 }
 \item{df.Q}{ Degrees of freedom for Q-statistic.
 }
-\item{p.h}{ Q-statistic p-value (assesses overall homogeneity between studies).
+\item{Qp}{ Q-statistic p-value (assesses overall homogeneity between studies).
 }
 \item{I2}{ Proportion of total variation in effect size that is due to heterogeneity rather than chance (see Shadish & Haddock, 2009; pp. 263).
 }

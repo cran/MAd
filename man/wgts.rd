@@ -1,9 +1,9 @@
-\name{weights}
+\name{wgts}
 \title{Weights added to Meta Data}
-\alias{weights}
+\alias{wgts}
 \description{Adds weights to the meta-analysis data set.}
 \usage{
-weights(g, var.g, data)
+wgts(g, var.g, data)
 }
 \arguments{
 \item{g}{Hedges g (unbiased standardized mean difference estimate). 

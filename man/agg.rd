@@ -2,7 +2,7 @@
 \alias{agg}
 \title{Meta-Analysis Aggregation
 }
-\description{This fuction has automated (i.e., will compute for all studies simultaneously) the process of aggregating within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). These functions default the correlation between within-study effect sizes at .50 (Wampold et al., 1997) and will compute the correct aggregated effect size for all studies. This default of .50 is adjustable.  \code{MAd} aggregation functions implement Gleser & Olkin (1994; 2009) recommendations for aggregating dependent correlations.}
+\description{This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable.  This \code{MAd} aggregation function implements Gleser & Olkin's (1994; 2009) recommended procedures for aggregating dependent effect sizes.}
 \usage{
 agg(id, g, var, n.1, n.2, cor = .50, mod=NULL, data)
 }
@@ -17,7 +17,7 @@ agg(id, g, var, n.1, n.2, cor = .50, mod=NULL, data)
 }
 \item{n.2}{Sample size of group two.
 }
-\item{cor}{Estimated correlation among within-study outcome variables. Default is .50 based on Wampold et al. recommended procedures (1997).
+\item{cor}{Estimated correlation among within-study outcome variables. Default is .50 based on Wampold et al. (1997) recommended procedure.
 }
 \item{mod}{Default is NULL. To aggregate by id and one moderator. If there are multiple levels of a categorical moderator within study and one can in derive seperate effect size estimates for each level within and between studies. However, there will be dependency issues and one way to resolve is shown below in the examples. 
 }
@@ -67,5 +67,5 @@ do.call(rbind, lapply(split(temp, temp$id),
 
 
 }
-\keyword{ data }
+\keyword{ aggregation }
 
