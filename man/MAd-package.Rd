@@ -10,8 +10,8 @@
 \tabular{ll}{
 Package: \tab MAd\cr
 Type: \tab Package\cr
-Version: \tab 0.6\cr
-Date: \tab 2010-06-21\cr
+Version: \tab 0.8\cr
+Date: \tab 2010-07-06\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -72,6 +72,15 @@ var.g <- c(.08,.06,.03,.04,.09,.04,.009,.033,.0058,.018,.011,.027,.026,.0040,
 mod <- factor(c(rep(c(1,1,2,3),5)))
 mods2 <- c(rep(1:5,4))
 df <- data.frame(id, n.1, n.2, g, var.g, mod, mods2)
+
+# Note: for all the examples in this manual, we have made up data and manually 
+# created variables and datasets. If conducting your own meta-analysis, 
+# a more convenient way for using the functions is to import your data from
+# a .csv file (with relevant variables in the dataset). One way to do this:
+# df <- read.csv(file.choose(), header = TRUE)
+#
+# Then, you can run the functions with this dataset and you do not need to 
+# manually create your dataset, as we have done above.
   
 
 # 1. Computations to Mean Differences:

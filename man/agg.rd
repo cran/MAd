@@ -2,7 +2,7 @@
 \alias{agg}
 \title{Meta-Analysis Aggregation
 }
-\description{This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable.  This \code{MAd} aggregation function implements Gleser & Olkin's (1994; 2009) recommended procedures for aggregating dependent effect sizes.}
+\description{This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin. 1994 & 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable.  This \code{MAd} aggregation function implements Gleser & Olkin's (1994; 2009) recommended procedures for aggregating dependent effect sizes.}
 \usage{
 agg(id, g, var, n.1, n.2, cor = .50, mod=NULL, data)
 }

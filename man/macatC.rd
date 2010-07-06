@@ -61,7 +61,8 @@ mod<-factor(c(rep(c(1,1,2,3),5)))
 df<-data.frame(id, n.1,n.2, g, var.g,mod)
 
 # Example
-macatC(1, 2, g=g, var=var.g, mod=mod, data=df,  method= "random", type= "post.hoc") 
+macatC(1, 2, g=g, var=var.g, mod=mod, data=df,  method= "random", 
+  type= "post.hoc") 
 
 
 }
