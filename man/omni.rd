@@ -67,5 +67,6 @@ df<-data.frame(id, n.1,n.2, g, var.g,mod)
 
 omni(g = g, var = var.g, data = df, type="weighted", method = "random")
 }
-\keyword{ models }
+\details{Depricated function. Use mareg(es~1, var, data) instead.}
+\keyword{internal}
 

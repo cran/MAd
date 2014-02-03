@@ -5,7 +5,7 @@
 \description{ Meta-regression function for a single or multiple predictor model. This function is a wrapper for the \code{rma()} function in the metafor package (Viechtbauer, W, 2010). Please see http://CRAN.R-project.org/package=metafor for details or for more advanced functionality with the \code{rma()} function. 
 }
 \usage{
-mareg(formula, var, data, method = "REML", subset,  ...)
+mareg(formula, var, data, method = "REML", subset,  digits = 3, ...)
 }
 \arguments{
   \item{formula}{ This is a formula based function, similar to other functions in R (e.g., lm), where the criterion variable (e.g., Hedges g in this case) is dependent on ('~') the predictor variables (e.g., moderators). The formula for two moderators would take this form: mareg(g ~ mod1 + mod2, var.g, data), where g is the criterion variable predicted by mod1 and mod2. The variance (var) of each g is var.g in this case.   
@@ -18,6 +18,8 @@ mareg(formula, var, data, method = "REML", subset,  ...)
 }
  \item{subset}{ an optional vector specifying a subset of observations to be used in the fitting process.
   }
+   \item{digits}{ Number of digits to output. Default is 3.
+  } 
  \item{...}{ Additional arguments to be passed to rma().
   }  
 }
@@ -25,7 +27,7 @@ mareg(formula, var, data, method = "REML", subset,  ...)
   R. R package version 1.1-0. for the details  of the \code{rma()}  function. http://CRAN.R-project.org/package=metafor
 }
 \value{
-\item{estimate}{ Unstandardized regression coefficient estimate.
+\item{estimate}{Meta-regression coefficient estimate.
 } 
 \item{se}{ Standard error of the estimate coefficient.
 }
@@ -35,7 +37,7 @@ mareg(formula, var, data, method = "REML", subset,  ...)
 }
 \item{ci.u}{ Upper 95\% confidence interval.
 }
-\item{Pr(>|z|)}{ p-value (significance level).
+\item{p}{ p-value (significance level).
 }
 \item{QE}{ Q-error. Measure of error in the model.
 }

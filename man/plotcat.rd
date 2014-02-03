@@ -2,10 +2,10 @@
 \alias{plotcat}
 \title{Categorical Moderator Graph
 }
-\description{ Outputs a rich and detailed boxplot graphic for each level of the specified moderator (under a fixed or random effects model). 
+\description{ Outputs boxplot graphic for each level of the specified moderator. 
 }
 \usage{
-plotcat(g, var, mod, data,  method="random",  modname=NULL,  title=NULL, ...)
+plotcat(g, var, mod, data, modname=NULL,  title=NULL, ...)
 }
 \arguments{
  \item{g}{Hedges g (unbiased estimate of d) effect size.
@@ -14,8 +14,7 @@ plotcat(g, var, mod, data,  method="random",  modname=NULL,  title=NULL, ...)
 }
   \item{mod}{Categorical moderator variable used for moderator analysis.
 } 
- \item{method}{ Default is \code{random} (Restricted-Maximal Likelihood), which is the standard random effects method. For fixed effects, use \code{fixed}. 
-}
+ 
 \item{data}{\code{data.frame} with values above.
 }
   \item{modname}{Name of moderator to appear on x axis of plot. Default is NULL.

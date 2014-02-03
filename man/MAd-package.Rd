@@ -4,14 +4,14 @@
 \docType{package}
 \title{Meta-Analysis with Mean Differences
 }
-\description{ This package contains a variety of functions relevant to conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset) based on recommended procedures by Gleser & Olkin (1994; 2009), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data. 
+\description{ This package contains a variety of functions for conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data. 
 }
 \details{
 \tabular{ll}{
 Package: \tab MAd\cr
 Type: \tab Package\cr
-Version: \tab 0.8\cr
-Date: \tab 2010-07-06\cr
+Version: \tab 0.8-1\cr
+Date: \tab 2014-02-03\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -24,7 +24,7 @@ There are a variety of functions to compute d (standardized mean difference) and
 
 2. Within-Study Aggregation of Effect Sizes:
 
-This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable.  This \code{MAd} aggregation function implements Gleser & Olkin's (1994; 2009) recommended procedures for aggregating dependent effect sizes. To our knowledge, this is the first statistical package/program to explicitly utilize and automate this type of aggregation procedure, which has a dual effect of saving the researcher \bold{substantial} time while improving the accuracy of their analyses. 
+This fuction will simultaneously aggregate all within-study effect sizes while taking into account the correlations among the within-study outcome measures (Gleser & Olkin 2009; Gleser & Olkin 2009; Hedges & Olkin, 1985; Rosenthal et al., 2006). The default imputed correlation between within-study effect sizes is set at .50 (Wampold et al., 1997) and will compute an aggregated effect size for each study. This default of .50 is adjustable and can vary between outcome types.  This \code{MAd} aggregation function implements Gleser & Olkin (1994; 2009) and Borenstein et al. (2009) procedures for aggregating dependent effect sizes. To our knowledge, this is the first statistical package/program to explicitly utilize and automate this type of aggregation procedure, which has a dual effect of saving the researcher \bold{substantial} time while improving the accuracy of their analyses. 
 
 3. Fixed and Random Effects Omnibus Analysis: 
 
@@ -47,7 +47,10 @@ Export MA output to nicely formatted Word tables.
 
 Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
-\references{ Cooper, H., Hedges, L.V., & Valentine, J.C. (2009). \emph{The handbook of research synthesis and meta-analysis} (2nd edition). New York: Russell Sage Foundation.
+\references{ 
+Borenstein (2009). Effect sizes for continuous data. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 279-293). New York: Russell Sage Foundation.
+
+Cooper, H., Hedges, L.V., & Valentine, J.C. (2009). \emph{The handbook of research synthesis and meta-analysis} (2nd edition). New York: Russell Sage Foundation.
 
 Gleser & Olkin (1994). Stochastically dependent effect sizes. In H. Cooper, & L. V. Hedges, & J. C.(Eds.), \emph{The handbook of research synthesis} (pp. 339-356). New York: Russell Sage Foundation.
   
@@ -60,68 +63,111 @@ Wampold, B. E., Mondin, G. W., Moody, M., Stich, F., Benson, K., & Ahn, H. (1997
 }
 \keyword{ package }
 \examples{ 
-# Examples for each broad area:
+## EXAMPLES FOR EACH BROAD AREA
 
-id <- c(1, 1:19)
-n.1 <- c(10,20,13,22,28,12,12,36,19,12,36,75,33,121,37,14,40,16,14,20)
-n.2 <- c(11,22,10,20,25,12,12,36,19,11,34,75,33,120,37,14,40,16,10,21)
-g <- c(.68,.56,.23,.64,.49,-.04,1.49,1.33,.58,1.18,-.11,1.27,.26,.40,.49,
-       .51,.40,.34,.42,1.16)
-var.g <- c(.08,.06,.03,.04,.09,.04,.009,.033,.0058,.018,.011,.027,.026,.0040,
-           .049,.0051,.040,.034,.0042,.016)
-mod <- factor(c(rep(c(1,1,2,3),5)))
-mods2 <- c(rep(1:5,4))
-df <- data.frame(id, n.1, n.2, g, var.g, mod, mods2)
-
-# Note: for all the examples in this manual, we have made up data and manually 
-# created variables and datasets. If conducting your own meta-analysis, 
-# a more convenient way for using the functions is to import your data from
-# a .csv file (with relevant variables in the dataset). One way to do this:
-# df <- read.csv(file.choose(), header = TRUE)
-#
-# Then, you can run the functions with this dataset and you do not need to 
-# manually create your dataset, as we have done above.
-  
-
-# 1. Computations to Mean Differences:
+# SAMPLE DATA:
+MA <- data.frame(id=factor(rep(1:5, 3)),
+                 measure=c(rep("dep",5), rep("anx",5), rep("shy",5)),
+                 es=c(rnorm(5, 0.8, .2), rnorm(5, 0.5, .1), rnorm(5, 0.4, .1)),
+                 var.es=abs(rnorm(5*3,0.05, .03)),
+                 nT=round(rnorm(5*3, 30, 5),0),
+                 nC=round(rnorm(5*3, 30, 5),0),
+                 mod1=factor(rep(c("a","b","c","d","e"),3)),
+                 mod2=rep(seq(20, 60, 10), 3))
+                 
+# 1. COMPUTE MEAN DIFFERENCE STATISTIC FROM 
+# REPORTED STATS (GENERALLY FROM A PRIMARY STUDY):
  
-# For example, suppose the primary study reported an log odds ratio for different 
+# suppose the primary study reported an log odds ratio for different 
 # proportions between 2 groups. Then, running:
 
 lor_to_d(.9070,.0676)
            
 # reported log odds ratio (lor = .9070) and variance (.0676) will output the 
-# standardized mean difference (d) and its variance (var.d) for use in 
-# the meta-analysis.
+# standardized mean difference (d) and its variance (var.d) that can be used in 
+# a meta-analysis.
 
-# 2. Within-Study Aggregation of Effect Sizes: 
+## 2. ACCOUNT FOR DEPENDENCIES: WITHIN-STUDY EFFECT SIZES (ES): 
 
-agg(id = id, g = g, var = var.g, n.1 = n.1, n.2 = n.2, data=df) 
+## 2 EXAMPLES:  
+# EXAMPLE 1:  AGGREGATING EFFECT SIZES FOR A DATA FRAME 
+# (MULTIPLE STUDIES AT LEAST SOME OF WHICH HAVE MULTIPLE DEPENDENT EFFECT SIZES)   
+# EXAMPLE 2:  AGGREGATING EFFECT SIZES FOR SINGLE STUDY WITH THREE OR MORE
+# EFFECT SIZES WHEN PAIRS OF DVS HAVE DIFFERENT CORRELATIONS 
 
-# where df = data.frame with columns for id, g (unbiased standardized
-# mean difference), var.g (variance of g), n.1 (sample size of group
+## EXAMPLE 1:  MA IS A DATA FRAME CONTAINING MULTIPLE STUDIES (id),
+## EACH WITH MULTIPLE EFFECT SIZES (CORRELATIONS BETWEEN ALL PAIRS OF DVS ARE r=.5.)
+
+
+# AGGREGATION PROCEDURE:  
+# method="GO1"; GLESER AND OLKIN (1994) PROCEDURE WHEN d IS COMPUTED 
+# USING POOLED SD IN THE DENOMINATOR
+
+MA1 <- agg(id=id, es=es, var=var.es, n.1=nT, n.2=nC, cor = .5, method="GO1", data=MA)   
+
+MA1
+
+## EXAMPLE 2: STUDY 1 COMPARES A TREATMENT AND CONTROL GROUP ON 
+## THREE OUTCOME MEASURES (DEPRESSION, ANXIETY, and SHYNESS).
+# THE CORRELATION AMONG THE THREE PAIRS OF DVS ARE r12=.5, r13=.2, and r23=.3.  
+
+study1 <- data.frame( id=factor(rep(1, 3)), 
+                      measure=c("dep", "anx", "shy"),
+                      es=c(0.8, 0.5, 0.4), 
+                      var.es=c(0.01, 0.02, 0.1), 
+                      nT=rep(30, 3), 
+                      nC=rep(30, 3))  
+
+# ONE WOULD CONSTRUCT THE CORRELATION MATRIX AS FOLLOWS:  
+
+cors <- matrix(c(1,.5,.2, 
+                 .5,1,.3, 
+                 .2,.3,1), nrow=3)  
+
+# AGGREGATION PROCEDURE:
+# method="GO1"; GLESER AND OLKIN (1994) PROCEDURE WHEN d 
+# IS COMPUTED USING POOLED SD IN THE DENOMINATOR 
+
+agg(id=id, es=es, var=var.es, n.1=nT, n.2=nC, cor=cors, method="GO1", mod = NULL, data=study1)   
+
+
+# where MA = data.frame with columns for id, es (standardized
+# mean difference), var.es (variance of es), n.1 (sample size of group
 # one), and n.2 (sample size of comparison group) with multiple rows per
 # study. Outputs an aggregated data.frame with 1 effect size per study. 
 
-# 3. Fixed and Random Effects Omnibus Analysis
+## 3.OMNIBUS ANALYSIS
 
-omni(g = g, var = var.g, data = df, type="weighted", method = "random")
+# FIRST ADD MODERATORS TO THE AGGREGATED DATASET:
 
-# where df = data.frame with columns for id, g (unbiased standardized
-# mean difference), var.g (variance of g), n.1 (sample size of group
+MODS <- data.frame(id=1:5,
+                   mod1=factor(c("a","b","a","b","b")),
+                   mod2=as.numeric(c(20, 30, 25, 35, 40)))
+                   
+MA2 <- merge(MA1, MODS, by='id')
+
+# Random Effects
+m0 <- mareg(es1~ 1, var = var1, method = "REML", data = MA2)
+
+# where MA = data.frame with columns for id, es (standardized
+# mean difference), var.es (variance of es), n.1 (sample size of group
 # one), and n.2 (sample size of comparison group).
  
-# 4. Moderator Analyses:
+# view output:
+summary(m0)
 
-# Random effects
-mareg(g~ mod + mods2, var = var.g, method = "REML", data = df) 
+
+# 4. MODERATOR ANALYSIS:
+
+# Random Effects
+m1 <- mareg(es1~ mod1 + mod2 , var = var1, method = "REML", data = MA2) 
  
-# where df = data.frame with columns  g (unbiased standardized
-# mean difference), var (variance of g), and moderators.
+# view output:
+summary(m1)
 
 # 5. Graphics:
 
-\dontrun{plotcon(g = g, var = var.g, mod = mod, data = df, method= "random", 
+\dontrun{plotcon(g = es1, var = var1, mod = mod1, data = MA2, method= "random", 
 modname= "Moderator") }
 
 # Additional Functions
@@ -133,18 +179,16 @@ modname= "Moderator") }
 
 # mareg fuction
 
-temp <- mareg(g~ mod + mods2, var = var.g, method = "REML", data = df)
+temp <- c
 
 # Export data to Word in formatted table
 
 #  wd(temp, get = TRUE, new = TRUE)
 }
 \seealso{
-\bold{RcmdrPlugin.MAd} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MAd};
+\bold{RcmdrPlugin.MA} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MA};
 
 \bold{MAc} package:  \url{http://CRAN.R-project.org/package=MAc};
-
-\bold{RcmdrPlugin.MAc} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MAc};
 
 \bold{compute.es} package:  \url{http://CRAN.R-project.org/package=compute.es};
 
