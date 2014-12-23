@@ -9,6 +9,6 @@ citEntry(entry = "Manual",
 
    textVersion = paste("A. C. Del Re & W. T. Hoyt (2014).",
                        "MAd: Meta-Analysis with Mean Differences.",
-                       "R package version 0.8-1.",
+                       "R package version 0.8-2.",
                        "URL http://cran.r-project.org/web/packages/MAd")
 )

@@ -4,14 +4,14 @@
 \docType{package}
 \title{Meta-Analysis with Mean Differences
 }
-\description{ This package contains a variety of functions for conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data. 
+\description{ The Mad package contains a variety of functions for conducting a mean differences meta-analysis using recommended procedures as described in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, and Valentine, 2009). The goal in creating this package was to provide user-friendly functions to assist researchers in the process of conducting a meta-analysis, from the initial to final stages of their analytic endeavor. The meta-analyst can begin their project by using \code{MAd} functions to derive d (standardized mean differences) and g (unbiased d) from a variety of statistics/values reported in the primary studies (e.g., raw means and sd, t-test). Then, the analyst can aggregate all within-study effect sizes (while accounting for within-study correlations among outcome measures and eliminating any dependencies in the dataset), calculate omnibus effect sizes under a fixed and random effects model, and assess for significant moderators (categorical and continuous, single and multi-predictor models) in the dataset. Finally, the meta-analyst can use one of several user-friendly graphics functions to visually represent their data. 
 }
 \details{
 \tabular{ll}{
 Package: \tab MAd\cr
 Type: \tab Package\cr
-Version: \tab 0.8-1\cr
-Date: \tab 2014-02-03\cr
+Version: \tab 0.8-2\cr
+Date: \tab 2014-12-23\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -177,13 +177,9 @@ modname= "Moderator") }
 # install R2wd
 # install.packages('R2wd', dependencies = TRUE)
 
-# mareg fuction
-
-temp <- c
-
 # Export data to Word in formatted table
 
-#  wd(temp, get = TRUE, new = TRUE)
+#  wd(m1, get = TRUE, new = TRUE)
 }
 \seealso{
 \bold{RcmdrPlugin.MA} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MA};

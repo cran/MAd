@@ -54,14 +54,14 @@ Maintainer: AC Del Re \email{acdelre@gmail.com}
 # with 3 or more effect sizes when pairs of DVs have 
 # different correlations.
 
-# LOAD DATA (EXAMPLE DATA FROM HOYT & DEL RE, 2013 SIMULATION):
+# LOAD DATA (EXAMPLE DATA FROM HOYT & DEL RE, 2015 SIMULATION):
 data(dat.hoyt)
 
 ## EXAMPLE 1:  dat.hoyt is a data frame with multiple studies identified
 ## by variable 'id'.  Each study has multiple effect sizes based on 
 ## multiple DVs.  Correlations between all pairs of DVs are r=.5.
 
-# NOTE: Based on a simulation study by Hoyt & Del Re (2013), it is
+# NOTE: Based on a simulation study by Hoyt & Del Re (2015), it is
 # recommended that methods "G01" and "G02" (Gleser and Olkin) 
 # should aggregate Cohen's d, without using Hedges & Olkin's 
 # recommended bias correction.  (Studies providing only a single

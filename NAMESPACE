@@ -1,5 +1,5 @@
 #NAMESPACE file for MAd
-#MAd version 0.8-1, for R versions 2.14.0 and above
+#MAd version 0.8-2, for R versions 2.14.0 and above
 
 # Export all names
 exportPattern(".")

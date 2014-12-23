@@ -125,8 +125,8 @@ mareg.default <- function(formula, var, data, method = "REML",
     mods <- model.matrix(terms, mf, contrasts)
     intercept <- which(colnames(mods) == "(Intercept)")
     if(length(intercept > 0)) mods <- mods[ , -intercept]
-    model0 <- rma(yi=yi, vi=vi, method=method, ...)
-    model <- rma(yi,vi=vi,mods=mods, method=method, ...)
+    model0 <- metafor::rma(yi=yi, vi=vi, method=method, ...)
+    model <- metafor::rma(yi,vi=vi,mods=mods, method=method, ...)
     predictors <- colnames(mods)
     model$out <- with(model, list(estimate=b, se=se, z=zval, ci.l=ci.lb,
       ci.u=ci.ub,  "Pr(>|z|)"=pval, predictors=predictors))
@@ -166,20 +166,20 @@ wd <- function(object, get = FALSE, new = FALSE, ...) {
 wd.default <- function(object, get = FALSE, new = FALSE, ...) {
   require('R2wd', quietly = TRUE)
   get <- get
-  open <- wdGet(get)	# If no word file is open, it will start a new one
+  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
   if(new == TRUE){
-    new <- wdNewDoc("c:\\Temp.doc")
+    new <- R2wd::wdNewDoc("c:\\Temp.doc")
   }
   else{ 
     new <- NULL
   }  	
   wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
    ci.lower=object$ci.lb, ci.upper=object$ci.ub,  "p"=object$pval), 4)
-  title <- wdHeading(level = 2, " Model Results:")
+  title <- R2wd::wdHeading(level = 2, " Model Results:")
   wd2 <-  round(data.frame(QE=object$QE, QEp=object$QEp, QM=object$QM, QMP=object$QMp), 4)
-  obj1 <- wdTable(wd1, ...)
-  title2 <- wdHeading(level = 2, "Heterogeneity & Fit:")
-  obj2 <- wdTable(wd2, ...)
+  obj1 <- R2wd::wdTable(wd1, ...)
+  title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
+  obj2 <- R2wd::wdTable(wd2, ...)
   out <- (list(open, new, title, obj1, title2, obj2))
   class(out) <- "wd"
   return(out)
@@ -187,9 +187,9 @@ wd.default <- function(object, get = FALSE, new = FALSE, ...) {
 wd.mareg <- function(object, get = FALSE, new = FALSE, ...) {
   require('R2wd', quietly = TRUE)
   get <- get
-  open <- wdGet(get)	# If no word file is open, it will start a new one
+  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
   if(new == TRUE){
-    new <- wdNewDoc("c:\\Temp.doc")
+    new <- R2wd::wdNewDoc("c:\\Temp.doc")
   }
   else{ 
     new <- NULL
@@ -198,12 +198,12 @@ wd.mareg <- function(object, get = FALSE, new = FALSE, ...) {
   QM.df <- round(object$m, 0)
   wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
    ci.l=object$ci.lb, ci.u=object$ci.ub,  "p"=object$pval), 4)
-  title <- wdHeading(level = 2, " Model Results:")
+  title <- R2wd::wdHeading(level = 2, " Model Results:")
   wd2 <-  round(data.frame(QE=object$QE, QE.df = QE.df,
             QEp=object$QEp, QM=object$QM, QM.df=QM.df, QMp=object$QMp), 4)
-  obj1 <- wdTable(wd1)
-  title2 <- wdHeading(level = 2, "Heterogeneity & Fit:")
-  obj2 <- wdTable(wd2, ...)
+  obj1 <- R2wd::wdTable(wd1)
+  title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
+  obj2 <- R2wd::wdTable(wd2, ...)
   out <- (list(open, new, title, obj1, title2, obj2))
   class(out) <- "wd.mareg"
   return(out)
@@ -212,9 +212,9 @@ wd.mareg <- function(object, get = FALSE, new = FALSE, ...) {
 wd.omni <- function(object, get = FALSE, new = FALSE, ...) {
   require('R2wd', quietly = TRUE)
   get <- get
-  open <- wdGet(get)	# If no word file is open, it will start a new one
+  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
   if(new == TRUE){
-    new <- wdNewDoc("c:\\Temp.doc")
+    new <- R2wd::wdNewDoc("c:\\Temp.doc")
   }
   else{ 
     new <- NULL
@@ -237,10 +237,10 @@ wd.omni <- function(object, get = FALSE, new = FALSE, ...) {
     results1 <- results1[c(8,1:7)]
     results2 <- data.frame(Q, Q.df, Qp)
     results2$I2 <- object$I2
-    title <- wdHeading(level = 2, " Omnibus Model Results:")
-    obj1 <- wdTable(results1)
-    title2 <- wdHeading(level = 2, "Heterogeneity:")
-    obj2 <- wdTable(results2)
+    title <- R2wd::wdHeading(level = 2, " Omnibus Model Results:")
+    obj1 <- R2wd::wdTable(results1)
+    title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
+    obj2 <- R2wd::wdTable(results2)
     out <- (list(open, new, title, obj1, title2, obj2))
     class(out) <- "wd.omni"
     return(out)
@@ -249,9 +249,9 @@ wd.omni <- function(object, get = FALSE, new = FALSE, ...) {
 wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
   require('R2wd', quietly = TRUE)
   get <- get
-  open <- wdGet(get)	# If no word file is open, it will start a new one
+  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
   if(new == TRUE){
-    new <- wdNewDoc("c:\\Temp.doc")
+    new <- R2wd::wdNewDoc("c:\\Temp.doc")
   }
   else{ 
     new <- NULL
@@ -287,10 +287,10 @@ wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
     results1 <- results1[c(13,11, 1:10,12)]
     results2 <- round(data.frame(Q=Qoverall, Qw, Qw.df, Qw.p, Qb, Qb.df, Qb.p),4)
     results1[2:12] <-round(results1[2:12],3)
-    title <- wdHeading(level = 2, " Categorical Moderator Results:")
-    obj1 <- wdTable(results1)
-    title2 <- wdHeading(level = 2, "Heterogeneity:")
-    obj2 <- wdTable(results2)
+    title <- R2wd::wdHeading(level = 2, " Categorical Moderator Results:")
+    obj1 <- R2wd::wdTable(results1)
+    title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
+    obj2 <- R2wd::wdTable(results2)
     out <- (list(open, new, title, obj1, title2, obj2))
     class(out) <- "wd.macat"
     return(out)
@@ -1470,6 +1470,7 @@ plotcon <- function(g, var, mod, data, method= "random", modname=NULL,
   # Outputs a scatterplot from a fixed or random effects meta-regression (continuous and/or
   # categorical).  
   require('ggplot2')
+  require('metafor')
   call <- match.call()
   mf <- match.call(expand.dots = FALSE)
   args <- match(c("g", "var","mod", "data","method"),
@@ -1490,27 +1491,27 @@ plotcon <- function(g, var, mod, data, method= "random", modname=NULL,
     m1 <- mareg(g~as.numeric(mod), var=var.g, method="FE", data=data)
     #preds <- predict(dat)
     #preds <- as.data.frame(unclass(preds))
-    congraph <- ggplot(data=data,aes(x=mod, y=g, size=1/var.g), na.rm=TRUE) +
-                  geom_point(alpha=.7) +   
-                  geom_abline(intercept=m1$b[1], slope=m1$b[2]) + 
-                  expand_limits(x = 0) +
-                  xlab(modname) + ylab("Effect Size") +  
-                  ggtitle(title) +
-                  theme_bw() +
-                  theme(legend.position = "none")
+    congraph <- ggplot2::ggplot(data=data,ggplot2::aes(x=mod, y=g, size=1/var.g), na.rm=TRUE) +
+                  ggplot2::geom_point(alpha=.7) +   
+                  ggplot2::geom_abline(intercept=m1$b[1], slope=m1$b[2]) + 
+                  ggplot2::expand_limits(x = 0) +
+                  ggplot2::xlab(modname) + ggplot2::ylab("Effect Size") +  
+                  ggplot2::ggtitle(title) +
+                  ggplot2::theme_bw() +
+                  ggplot2::theme(legend.position = "none")
   }
   if(method=="random") {
     m1 <- mareg(g~as.numeric(mod), var=var.g, method="REML", data=data)
     #preds <- predict(dat)
     #preds <- as.data.frame(unclass(preds))
-    congraph <- ggplot(data=data,aes(x=mod, y=g, size=1/var.g), na.rm=TRUE) +
-      geom_point(alpha=.7) +   
-      geom_abline(intercept=m1$b[1], slope=m1$b[2]) + 
-      expand_limits(x = 0) +
-      xlab(modname) + ylab("Effect Size") +  
-      ggtitle(title) +
-      theme_bw() +
-      theme(legend.position = "none")
+    congraph <- ggplot2::ggplot(data=data,ggplot2::aes(x=mod, y=g, size=1/var.g), na.rm=TRUE) +
+      ggplot2::geom_point(alpha=.7) +   
+      ggplot2::geom_abline(intercept=m1$b[1], slope=m1$b[2]) + 
+      ggplot2::expand_limits(x = 0) +
+      ggplot2::xlab(modname) + ggplot2::ylab("Effect Size") +  
+      ggplot2::ggtitle(title) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(legend.position = "none")
   }
   return(congraph)
 }
@@ -1553,16 +1554,16 @@ plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
   m$mod <- as.character(m$mod)
   compl<-!is.na(m$mod)
   meta<-m[compl,]
-  catmod <- ggplot(meta,  aes(factor(mod), g, weight = 1/var.g), na.rm=TRUE) + 
-    geom_boxplot(aes(weight = 1/var.g), outlier.size=2,na.rm=TRUE) + 
-    geom_jitter(aes(shape=factor(mod), size=1/var.g), alpha=.25) + 
-    geom_point(aes(x=factor(mod),y=wmean(g, weights= 1/var.g, na.rm=TRUE)),shape = 23, 
+  catmod <- ggplot2::ggplot(meta,  ggplot2::aes(factor(mod), g, weight = 1/var.g), na.rm=TRUE) + 
+    ggplot2::geom_boxplot(ggplot2::aes(weight = 1/var.g), outlier.size=2,na.rm=TRUE) + 
+    ggplot2::geom_jitter(ggplot2::aes(shape=factor(mod), size=1/var.g), alpha=.25) + 
+    ggplot2::geom_point(ggplot2::aes(x=factor(mod),y=wmean(g, weights= 1/var.g, na.rm=TRUE)),shape = 23, 
                size = 3)+
-    xlab(modname) + 
-    ylab("Effect Size")  +
-    ggtitle(title) +
-    theme_bw() +
-    theme(legend.position = "none")
+    ggplot2::xlab(modname) + 
+    ggplot2::ylab("Effect Size")  +
+    ggplot2::ggtitle(title) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "none")
   return(catmod)
 }
 
@@ -1602,10 +1603,10 @@ plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
 #     omnibus <- data.frame(id="Omnibus", g=T.agg)
 #     meta$l.ci95 <- meta$g-1.96*sqrt(meta$var.g)     #create fixed ci for each study
 #     meta$u.ci95 <- meta$g + 1.96*sqrt(meta$var.g)
-#     forest <- ggplot(meta,  aes(y = id,x=g))+       # aes(y = factor(id, levels=rev(levels(id))),  x = g))  +  
+#     forest <- ggplot(meta,  ggplot2::aes(y = id,x=g))+       # aes(y = factor(id, levels=rev(levels(id))),  x = g))  +  
 #                    geom_vline(xintercept=0) + 
-#                    geom_point(data=omnibus, colour="red", size=8, shape=23) + 
-#                    #geom_point(aes(size=wi)) + 
+#                    ggplot2::geom_point(data=omnibus, colour="red", size=8, shape=23) + 
+#                    #ggplot2::geom_point(aes(size=wi)) + 
 #                    opts(title=title,  legend.position="none") + 
 #                    geom_errorbarh(data=meta,aes(xmin = l.ci95,  xmax=u.ci95), size=.3, alpha=.6) + 
 #                    geom_vline(colour="red", linetype=2,  xintercept=T.agg) + 
@@ -1635,10 +1636,10 @@ plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
 #    meta$u.ci95 <- meta$g + 1.96*sqrt(meta$var.g)
 #    forest <- ggplot(meta,  aes(y = id,x=g))+    #factor(id, levels=rev(levels(id))),  x = g))  +  
 #                  geom_vline(xintercept=0) + 
-#                  geom_point(data=omnibus.tau, colour="red",  size=8,  shape=23) + 
-#                  #geom_point(aes(size=wi.tau)) + 
+#                  ggplot2::geom_point(data=omnibus.tau, colour="red",  size=8,  shape=23) + 
+#                  #ggplot2::geom_point(aes(size=wi.tau)) + 
 #                  opts(title=title,  legend.position="none") + 
-#                  #geom_point(data=meta,aes(size=wi.tau)) + 
+#                  #ggplot2::geom_point(data=meta,aes(size=wi.tau)) + 
 #                  geom_errorbarh(data=meta,aes(xmin = l.ci95,  xmax=u.ci95), size=.3, alpha=.6) + 
 #                  geom_vline(colour="red", linetype=2,  xintercept=T.agg.tau) + 
 #                  #xlim(-1, 1) + 
@@ -1701,7 +1702,7 @@ plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
 #    funnel <- ggplot(meta,  aes(y = se,  x = g))  +  
 #                    geom_vline(colour="black", linetype=1, 
 #                    xintercept=omnibus) + 
-#                    #geom_point(aes(size=wi)) + 
+#                    #ggplot2::geom_point(aes(size=wi)) + 
 #                    opts(title=title,  legend.position="none") + 
 #                    xlim(-1.7, 1.7) + 
 #                    ylim(.028, .5) + 
@@ -1732,7 +1733,7 @@ plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
 #    funnel <- ggplot(meta,  aes(y = se.tau,  x = g))  +  
 #                    geom_vline(colour="black", linetype=1, 
 #                    xintercept=omnibus.tau) + 
-#                    #geom_point(aes(size=wi.tau)) + 
+#                    #ggplot2::geom_point(aes(size=wi.tau)) + 
 #                    opts(title=title,  legend.position="none") + 
 #                    #xlim(-2, 2) + 
 #                    #ylim(.028, .5) + 
@@ -2011,7 +2012,7 @@ print.icclist <- function (x, ...)
 #    multimod <- ggplot(meta, aes(conmod, g, weight=wi), na.rm=TRUE) + 
 #                       opts(title=title, legend.position="none", na.rm=TRUE) + 
 #                       facet_wrap(~catmod)  + 
-#                       geom_point( aes(size=wi, shape=catmod)) + 
+#                       ggplot2::geom_point( aes(size=wi, shape=catmod)) + 
 #                       geom_smooth(aes(group=1, weight=wi),
 #                                   method= lm, se=FALSE, na.rm=TRUE) +
 #                       ylab("Effect Size") + 
@@ -3081,7 +3082,7 @@ MRfit <- function( ...) {
 #     multimod <- ggplot(meta, aes(conmod, g, weight=wi), na.rm=TRUE) + 
 #                        opts(title=title, legend.position="none", na.rm=TRUE) + 
 #                        facet_wrap(~catmod)  + 
-#                        geom_point( aes(size=wi, shape=catmod)) + 
+#                        ggplot2::geom_point( aes(size=wi, shape=catmod)) + 
 #                        geom_smooth(aes(group=1, weight=wi),
 #                                    method= lm, se=FALSE, na.rm=TRUE) +
 #                        ylab("Effect Size") + 
@@ -3091,7 +3092,7 @@ MRfit <- function( ...) {
 #     multimod <- ggplot(meta, aes(conmod, g, weight=wi.tau), na.rm=TRUE) + 
 #                               opts(title=title, legend.position="none", na.rm=TRUE) + 
 #                               facet_wrap(~catmod)  + 
-#                               geom_point(aes(size=wi.tau, shape=catmod)) + 
+#                               ggplot2::geom_point(aes(size=wi.tau, shape=catmod)) + 
 #                               geom_smooth(aes(group=1, weight=wi.tau), 
 #                                           method = lm, se = FALSE,  na.rm=TRUE) + 
 #                               ylab("Effect Size") + 
