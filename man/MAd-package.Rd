@@ -19,7 +19,7 @@ The \code{MAd} package has integrated functions to facilitate the meta-analytic 
  
 1. Computations to Calculate Mean Differences: 
 
-There are a variety of functions to compute d (standardized mean difference) and g (unbiased d) from various designs reported in the primary studies. Most functions were derived from Borenstein's chapter in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, & Valentine, 2009; pp. 228-234).  For additional conversion formulas see the \bold{compute.es} package:  \url{http://CRAN.R-project.org/package=compute.es}
+There are a variety of functions to compute d (standardized mean difference) and g (unbiased d) from various designs reported in the primary studies. Most functions were derived from Borenstein's chapter in \emph{The Handbook of Research Synthesis and Meta-Analysis} (Cooper, Hedges, & Valentine, 2009; pp. 228-234).  For additional conversion formulas see the \bold{compute.es} package:  \url{https://CRAN.R-project.org/package=compute.es}
 
 
 2. Within-Study Aggregation of Effect Sizes:
@@ -57,7 +57,7 @@ Gleser & Olkin (1994). Stochastically dependent effect sizes. In H. Cooper, & L.
 Gleser & Olkin (2009). Stochastically dependent effect sizes. In H. Cooper, L. V. Hedges, & J. C. Valentine (Eds.), \emph{The handbook of research synthesis and meta analysis} (pp. 357-376). New York: Russell Sage Foundation.
 
  Viechtbauer, W (2010). metafor: Meta-Analysis Package for
-  R. R package version 1.1-0. http://CRAN.R-project.org/package=metafor
+  R. R package version 1.1-0. https://CRAN.R-project.org/package=metafor
 
 Wampold, B. E., Mondin, G. W., Moody, M., Stich, F., Benson, K., & Ahn, H. (1997). A meta-analysis of outcome studies comparing bona fide psychotherapies: Empiricially, 'all must have prizes.' \emph{Psychological Bulletin, 122(3)}, 203-215.
 }
@@ -182,11 +182,11 @@ modname= "Moderator") }
 #  wd(m1, get = TRUE, new = TRUE)
 }
 \seealso{
-\bold{RcmdrPlugin.MA} package:  \url{http://CRAN.R-project.org/package=RcmdrPlugin.MA};
+\bold{RcmdrPlugin.MA} package:  \url{https://CRAN.R-project.org/package=RcmdrPlugin.MA};
 
-\bold{MAc} package:  \url{http://CRAN.R-project.org/package=MAc};
+\bold{MAc} package:  \url{https://CRAN.R-project.org/package=MAc};
 
-\bold{compute.es} package:  \url{http://CRAN.R-project.org/package=compute.es};
+\bold{compute.es} package:  \url{https://CRAN.R-project.org/package=compute.es};
 
-\bold{metafor} package:  \url{http://CRAN.R-project.org/package=metafor}
+\bold{metafor} package:  \url{https://CRAN.R-project.org/package=metafor}
 }
