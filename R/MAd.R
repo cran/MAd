@@ -109,8 +109,12 @@ print.summary.mareg <- function(x, digits=3,...) {
 # formula based function for meta-regression 
 mareg.default <- function(formula, var, data, method = "REML", 
   subset, ...) {
-    require('metafor', quietly=TRUE)  # requires metafor's rma function
-    suppressMessages(library(metafor))
+  if (!requireNamespace("metafor", quietly = TRUE)) {
+    stop(
+      "Package \"metafor\" must be installed to use this function.",
+      call. = FALSE
+    )
+  } # requires metafor's rma function
     call <- match.call()
     mf <- match.call(expand.dots = FALSE)
     args <- match(c("formula", "var", "data", "subset"),
@@ -146,155 +150,155 @@ print.summary.mareg <- function(x, ...) {
   invisible(x)
 }
 
-r2 <- function(x) {
-   UseMethod("r2")
-}
+# r2 <- function(x) {
+#    UseMethod("r2")
+# }
 
-r2.mareg <- function(x) {
-  cat("\n Explained Variance:", "", "\n")
-  cat("\n Tau^2      (total):", round(x$tau2_empty,4))
-  cat("\n Tau^2      (model):", round(x$tau2,4))
-  cat("\n R^2 (% expl. var.):", round(x$R2,2), "\n")
-}
+# r2.mareg <- function(x) {
+#   cat("\n Explained Variance:", "", "\n")
+#   cat("\n Tau^2      (total):", round(x$tau2_empty,4))
+#   cat("\n Tau^2      (model):", round(x$tau2,4))
+#   cat("\n R^2 (% expl. var.):", round(x$R2,2), "\n")
+# }
+# 
+# 
+# # function to print objects to Word
+# wd <- function(object, get = FALSE, new = FALSE, ...) {
+#   UseMethod("wd")
+# }
 
-
-# function to print objects to Word
-wd <- function(object, get = FALSE, new = FALSE, ...) {
-  UseMethod("wd")
-}
-
-wd.default <- function(object, get = FALSE, new = FALSE, ...) {
-  require('R2wd', quietly = TRUE)
-  get <- get
-  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
-  if(new == TRUE){
-    new <- R2wd::wdNewDoc("c:\\Temp.doc")
-  }
-  else{ 
-    new <- NULL
-  }  	
-  wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
-   ci.lower=object$ci.lb, ci.upper=object$ci.ub,  "p"=object$pval), 4)
-  title <- R2wd::wdHeading(level = 2, " Model Results:")
-  wd2 <-  round(data.frame(QE=object$QE, QEp=object$QEp, QM=object$QM, QMP=object$QMp), 4)
-  obj1 <- R2wd::wdTable(wd1, ...)
-  title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
-  obj2 <- R2wd::wdTable(wd2, ...)
-  out <- (list(open, new, title, obj1, title2, obj2))
-  class(out) <- "wd"
-  return(out)
-}
-wd.mareg <- function(object, get = FALSE, new = FALSE, ...) {
-  require('R2wd', quietly = TRUE)
-  get <- get
-  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
-  if(new == TRUE){
-    new <- R2wd::wdNewDoc("c:\\Temp.doc")
-  }
-  else{ 
-    new <- NULL
-  }  	
-  QE.df <- round(object$k - object$p, 0)
-  QM.df <- round(object$m, 0)
-  wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
-   ci.l=object$ci.lb, ci.u=object$ci.ub,  "p"=object$pval), 4)
-  title <- R2wd::wdHeading(level = 2, " Model Results:")
-  wd2 <-  round(data.frame(QE=object$QE, QE.df = QE.df,
-            QEp=object$QEp, QM=object$QM, QM.df=QM.df, QMp=object$QMp), 4)
-  obj1 <- R2wd::wdTable(wd1)
-  title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
-  obj2 <- R2wd::wdTable(wd2, ...)
-  out <- (list(open, new, title, obj1, title2, obj2))
-  class(out) <- "wd.mareg"
-  return(out)
-}
-
-wd.omni <- function(object, get = FALSE, new = FALSE, ...) {
-  require('R2wd', quietly = TRUE)
-  get <- get
-  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
-  if(new == TRUE){
-    new <- R2wd::wdNewDoc("c:\\Temp.doc")
-  }
-  else{ 
-    new <- NULL
-  }  	
-    k <- object$k
-    estimate <- object$estimate
-    #var <- object$var
-    se <- object$se
-    ci.l <- object$ci.l
-    ci.u <- object$ci.u 
-    z <- object$z
-    p <- object$p
-    Q <- object$Q
-    Q.df <- object$df.Q
-    Qp <- object$Qp
-    I2 <- object$I2
-    results1 <- data.frame(estimate, se, ci.l, ci.u, z, p)
-    #results <- formatC(table, format="f", digits=digits)
-    results1$k <- object$k
-    results1 <- results1[c(8,1:7)]
-    results2 <- data.frame(Q, Q.df, Qp)
-    results2$I2 <- object$I2
-    title <- R2wd::wdHeading(level = 2, " Omnibus Model Results:")
-    obj1 <- R2wd::wdTable(results1)
-    title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
-    obj2 <- R2wd::wdTable(results2)
-    out <- (list(open, new, title, obj1, title2, obj2))
-    class(out) <- "wd.omni"
-    return(out)
-}
-
-wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
-  require('R2wd', quietly = TRUE)
-  get <- get
-  open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
-  if(new == TRUE){
-    new <- R2wd::wdNewDoc("c:\\Temp.doc")
-  }
-  else{ 
-    new <- NULL
-  }  	
-    x1 <- object$Model
-    x2 <- object$Heterogeneity
-    mod <- x1$mod
-    k <- x1$k
-    estimate <- x1$estimate
-    var <- x1$var
-    se <- x1$se
-    ci.l <- x1$ci.l
-    ci.u <- x1$ci.u 
-    z <- x1$z
-    p <- x1$p
-    Q <- x1$Q
-    df <- x1$df
-    p.h <- x1$p.h
-    I2 <- x1$I2
-    Qoverall <- x2$Q
-    Qw <- x2$Qw
-    Qw.df <- x2$df.w
-    Qw.p <- x2$p.w
-    Qb <- x2$Qb
-    Qb.df <- x2$df.b
-    Qb.p <- x2$p.b
-    results1 <- data.frame(estimate, var, se, ci.l, ci.u, z, p,
-      Q, df, p.h)
-    #results <- formatC(table, format="f", digits=digits)
-    results1$k <- x1$k
-    results1$I2 <- x1$I2
-    results1$mod <- x1$mod
-    results1 <- results1[c(13,11, 1:10,12)]
-    results2 <- round(data.frame(Q=Qoverall, Qw, Qw.df, Qw.p, Qb, Qb.df, Qb.p),4)
-    results1[2:12] <-round(results1[2:12],3)
-    title <- R2wd::wdHeading(level = 2, " Categorical Moderator Results:")
-    obj1 <- R2wd::wdTable(results1)
-    title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
-    obj2 <- R2wd::wdTable(results2)
-    out <- (list(open, new, title, obj1, title2, obj2))
-    class(out) <- "wd.macat"
-    return(out)
-}
+# wd.default <- function(object, get = FALSE, new = FALSE, ...) {
+#   require('R2wd', quietly = TRUE)
+#   get <- get
+#   open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
+#   if(new == TRUE){
+#     new <- R2wd::wdNewDoc("c:\\Temp.doc")
+#   }
+#   else{ 
+#     new <- NULL
+#   }  	
+#   wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
+#    ci.lower=object$ci.lb, ci.upper=object$ci.ub,  "p"=object$pval), 4)
+#   title <- R2wd::wdHeading(level = 2, " Model Results:")
+#   wd2 <-  round(data.frame(QE=object$QE, QEp=object$QEp, QM=object$QM, QMP=object$QMp), 4)
+#   obj1 <- R2wd::wdTable(wd1, ...)
+#   title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
+#   obj2 <- R2wd::wdTable(wd2, ...)
+#   out <- (list(open, new, title, obj1, title2, obj2))
+#   class(out) <- "wd"
+#   return(out)
+# }
+# wd.mareg <- function(object, get = FALSE, new = FALSE, ...) {
+#   require('R2wd', quietly = TRUE)
+#   get <- get
+#   open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
+#   if(new == TRUE){
+#     new <- R2wd::wdNewDoc("c:\\Temp.doc")
+#   }
+#   else{ 
+#     new <- NULL
+#   }  	
+#   QE.df <- round(object$k - object$p, 0)
+#   QM.df <- round(object$m, 0)
+#   wd1 <- round(data.frame(estimate=object$b, se=object$se, z=object$zval,
+#    ci.l=object$ci.lb, ci.u=object$ci.ub,  "p"=object$pval), 4)
+#   title <- R2wd::wdHeading(level = 2, " Model Results:")
+#   wd2 <-  round(data.frame(QE=object$QE, QE.df = QE.df,
+#             QEp=object$QEp, QM=object$QM, QM.df=QM.df, QMp=object$QMp), 4)
+#   obj1 <- R2wd::wdTable(wd1)
+#   title2 <- R2wd::wdHeading(level = 2, "Heterogeneity & Fit:")
+#   obj2 <- R2wd::wdTable(wd2, ...)
+#   out <- (list(open, new, title, obj1, title2, obj2))
+#   class(out) <- "wd.mareg"
+#   return(out)
+# }
+# 
+# wd.omni <- function(object, get = FALSE, new = FALSE, ...) {
+#   require('R2wd', quietly = TRUE)
+#   get <- get
+#   open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
+#   if(new == TRUE){
+#     new <- R2wd::wdNewDoc("c:\\Temp.doc")
+#   }
+#   else{ 
+#     new <- NULL
+#   }  	
+#     k <- object$k
+#     estimate <- object$estimate
+#     #var <- object$var
+#     se <- object$se
+#     ci.l <- object$ci.l
+#     ci.u <- object$ci.u 
+#     z <- object$z
+#     p <- object$p
+#     Q <- object$Q
+#     Q.df <- object$df.Q
+#     Qp <- object$Qp
+#     I2 <- object$I2
+#     results1 <- data.frame(estimate, se, ci.l, ci.u, z, p)
+#     #results <- formatC(table, format="f", digits=digits)
+#     results1$k <- object$k
+#     results1 <- results1[c(8,1:7)]
+#     results2 <- data.frame(Q, Q.df, Qp)
+#     results2$I2 <- object$I2
+#     title <- R2wd::wdHeading(level = 2, " Omnibus Model Results:")
+#     obj1 <- R2wd::wdTable(results1)
+#     title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
+#     obj2 <- R2wd::wdTable(results2)
+#     out <- (list(open, new, title, obj1, title2, obj2))
+#     class(out) <- "wd.omni"
+#     return(out)
+# }
+# 
+# wd.macat <- function(object, get = FALSE, new = FALSE, ...) {
+#   require('R2wd', quietly = TRUE)
+#   get <- get
+#   open <- R2wd::wdGet(get)	# If no word file is open, it will start a new one
+#   if(new == TRUE){
+#     new <- R2wd::wdNewDoc("c:\\Temp.doc")
+#   }
+#   else{ 
+#     new <- NULL
+#   }  	
+#     x1 <- object$Model
+#     x2 <- object$Heterogeneity
+#     mod <- x1$mod
+#     k <- x1$k
+#     estimate <- x1$estimate
+#     var <- x1$var
+#     se <- x1$se
+#     ci.l <- x1$ci.l
+#     ci.u <- x1$ci.u 
+#     z <- x1$z
+#     p <- x1$p
+#     Q <- x1$Q
+#     df <- x1$df
+#     p.h <- x1$p.h
+#     I2 <- x1$I2
+#     Qoverall <- x2$Q
+#     Qw <- x2$Qw
+#     Qw.df <- x2$df.w
+#     Qw.p <- x2$p.w
+#     Qb <- x2$Qb
+#     Qb.df <- x2$df.b
+#     Qb.p <- x2$p.b
+#     results1 <- data.frame(estimate, var, se, ci.l, ci.u, z, p,
+#       Q, df, p.h)
+#     #results <- formatC(table, format="f", digits=digits)
+#     results1$k <- x1$k
+#     results1$I2 <- x1$I2
+#     results1$mod <- x1$mod
+#     results1 <- results1[c(13,11, 1:10,12)]
+#     results2 <- round(data.frame(Q=Qoverall, Qw, Qw.df, Qw.p, Qb, Qb.df, Qb.p),4)
+#     results1[2:12] <-round(results1[2:12],3)
+#     title <- R2wd::wdHeading(level = 2, " Categorical Moderator Results:")
+#     obj1 <- R2wd::wdTable(results1)
+#     title2 <- R2wd::wdHeading(level = 2, "Heterogeneity:")
+#     obj2 <- R2wd::wdTable(results2)
+#     out <- (list(open, new, title, obj1, title2, obj2))
+#     class(out) <- "wd.macat"
+#     return(out)
+# }
 
 # 3.18.10 internal for GUI: convert to factor
 
@@ -1469,8 +1473,18 @@ plotcon <- function(g, var, mod, data, method= "random", modname=NULL,
   title=NULL, ...) {
   # Outputs a scatterplot from a fixed or random effects meta-regression (continuous and/or
   # categorical).  
-  require('ggplot2')
-  require('metafor')
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop(
+      "Package \"ggplot2\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+  if (!requireNamespace("metafor", quietly = TRUE)) {
+    stop(
+      "Package \"metafor\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
   call <- match.call()
   mf <- match.call(expand.dots = FALSE)
   args <- match(c("g", "var","mod", "data","method"),
@@ -1533,9 +1547,12 @@ wmean <- function (x, weights = NULL, normwt = "ignored", na.rm = TRUE)
 }
 
 plotcat <- function(g, var, mod, data,  modname=NULL,  title=NULL, ...) {
-  require('ggplot2')
-  #require('quantreg')
-  #require('SparseM')
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop(
+      "Package \"ggplot2\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
   call <- match.call()
   mf <- match.call(expand.dots = FALSE)
   args <- match(c("g", "var","mod", "data"),
@@ -2533,32 +2550,32 @@ agg_g2 <- function(meta, id, g, var.g, n.1, n.2, mod, cor = .50) {
 # g (unbiased standardized mean diff ES),  and n.1 (group 1 sample size),
 # n.2 (group 2 sample size).
  
-MetaG <-  function(meta, cor = .50) {  
-  meta <- agg_g(meta, meta$id, meta$g, meta$var.g, meta$n.1, meta$n.2, cor)
-  meta$l.ci95 <- meta$g-1.96*sqrt(meta$var.g)     #create random ci for each study
-  meta$u.ci95 <- meta$g + 1.96*sqrt(meta$var.g)
-  meta$z.score <- meta$g/sqrt(meta$var.g)
-  meta$p.value <- 2*(1-pt(abs(meta$z.score),  (meta$n.1 + meta$n.2) -1))
-  meta$wi <-  1/meta$var.g  # computing weight for each study
-  meta$wiTi <- meta$wi*meta$g  # used to calculate omnibus
-  meta$wiTi2 <- meta$wi*(meta$g)^2  # used to calculate omnibus
-  # random effects #
-  sum.wi <- sum(meta$wi, na.rm=TRUE)  # used to calculate random effects
-  sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)  # used to calculate random effects
-  sum.wiTi2 <- sum(meta$wiTi2, na.rm=TRUE)  # used to calculate random effects
-  Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi  #used to calculate random effects            
-  k <- sum(!is.na(meta$g))  # number of studies
-  df <- k-1  # degree of freedom
-  sum.wi2 <- sum(meta$wi^2, na.rm=TRUE)  # used to calculate random effects 
-  comp <- sum.wi-sum.wi2/sum.wi  # (pg. 271) used to calculate random effects	
-  meta$tau <- (Q-(k - 1))/comp  # Level 2 variance
-  meta$tau <- ifelse(meta$tau <= 0, 0, meta$tau)
-  meta$var.tau <- meta$tau + meta$var.g  # Random effects variance (within study var + between var) 
-  meta$wi.tau <- 1/meta$var.tau  # Random effects weights
-  meta$wiTi.tau <- meta$wi.tau*meta$g
-  meta$wiTi2.tau <- meta$wi.tau*(meta$g)^2
-  return(meta)
-}
+# MetaG <-  function(meta, cor = .50) {  
+#   meta <- agg_g(meta, meta$id, meta$g, meta$var.g, meta$n.1, meta$n.2, cor)
+#   meta$l.ci95 <- meta$g-1.96*sqrt(meta$var.g)     #create random ci for each study
+#   meta$u.ci95 <- meta$g + 1.96*sqrt(meta$var.g)
+#   meta$z.score <- meta$g/sqrt(meta$var.g)
+#   meta$p.value <- 2*(1-pt(abs(meta$z.score),  (meta$n.1 + meta$n.2) -1))
+#   meta$wi <-  1/meta$var.g  # computing weight for each study
+#   meta$wiTi <- meta$wi*meta$g  # used to calculate omnibus
+#   meta$wiTi2 <- meta$wi*(meta$g)^2  # used to calculate omnibus
+#   # random effects #
+#   sum.wi <- sum(meta$wi, na.rm=TRUE)  # used to calculate random effects
+#   sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)  # used to calculate random effects
+#   sum.wiTi2 <- sum(meta$wiTi2, na.rm=TRUE)  # used to calculate random effects
+#   Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi  #used to calculate random effects            
+#   k <- sum(!is.na(meta$g))  # number of studies
+#   df <- k-1  # degree of freedom
+#   sum.wi2 <- sum(meta$wi^2, na.rm=TRUE)  # used to calculate random effects 
+#   comp <- sum.wi-sum.wi2/sum.wi  # (pg. 271) used to calculate random effects	
+#   meta$tau <- (Q-(k - 1))/comp  # Level 2 variance
+#   meta$tau <- ifelse(meta$tau <= 0, 0, meta$tau)
+#   meta$var.tau <- meta$tau + meta$var.g  # Random effects variance (within study var + between var) 
+#   meta$wi.tau <- 1/meta$var.tau  # Random effects weights
+#   meta$wiTi.tau <- meta$wi.tau*meta$g
+#   meta$wiTi2.tau <- meta$wi.tau*(meta$g)^2
+#   return(meta)
+# }
 
 # required inputs are id, g, var.g and will output weights, ci, etc
 Wifun <-  function(meta) {  
@@ -2595,78 +2612,78 @@ Wifun <-  function(meta) {
 # g (unbiased standardized mean diff ES),  and n.1 (group 1 sample size),
 # n.2 (group 2 sample size).
 
-OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
-  # Computes fixed and random effects omnibus effect size for correlations.  
-  # Args:
-  #   meta: data.frame with g (standardized mean diff) and n (sample size)for each study.
-  #   var:  "weighted" or "unweighted". "weighted" is the default. Use the 
-  #   unweighted variance method only if Q is rejected and is very large relative to k.   
-  # Returns:
-  #   Fixed and random effects omnibus effect size, variance, standard error, 
-  #   upper and lower confidence intervals, p-value, Q (heterogeneity test), I2
-  #   (I-squared--proportion of total variation in tmt effects due to heterogeneity 
-  #   rather than chance). 
-  meta <- MetaG(meta, cor)
-  k <- length(!is.na(meta$g)) # number of studies
-  df <- k-1 
-  sum.wi <- sum(meta$wi, na.rm=TRUE)  # used to calculate omnibus
-  sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)  # used to calculate omnibus
-  sum.wiTi2 <- sum(meta$wiTi2, na.rm=TRUE)  # used to calculate omnibus
-  T.agg <- sum.wiTi/sum.wi  # omnibus g 
-  var.T.agg <- 1/sum.wi  # omnibus var.g
-  se.T.agg <- sqrt(var.T.agg) 
-  z.value  <-  T.agg/se.T.agg
-  p.value <-  2*pnorm(abs(z.value), lower.tail=FALSE)
-  lower.ci <- T.agg-1.96*se.T.agg
-  upper.ci <- T.agg + 1.96*se.T.agg
-  Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi  # FE homogeneity test
-  I2 <- (Q-(k-1))/Q  # I-squared 
-  I2 <- ifelse(I2<0, 0, I2)        
-  I2 <- paste(round(I2*100, 4),  "%",  sep="")                        
-  p.homog <- pchisq(Q, df, lower.tail=FALSE)  # <.05 = sig. heterogeneity  
-  # random effects #
-  sum.wi2 <- sum(meta$wi^2, na.rm=TRUE)
-  comp <- sum.wi-sum.wi2/sum.wi
-  sum.wi.tau <- sum(meta$wi.tau, na.rm=TRUE)
-  sum.wiTi.tau <- sum(meta$wiTi.tau, na.rm=TRUE)
-  sum.wiTi2.tau <- sum(meta$wiTi2.tau, na.rm=TRUE)
-  T.agg.tau <- sum.wiTi.tau/sum.wi.tau
-  if(var == "weighted") {
-    var.T.agg.tau <-  1/sum.wi.tau 
-    se.T.agg.tau <- sqrt(var.T.agg.tau)
-    z.valueR  <-  T.agg.tau/se.T.agg.tau
-    p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
-    lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
-    upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
-  }
-  if(var == "unweighted") {  # unweighted variance method
-    var.agg <- (sum(meta$g^2)-sum(meta$g)^2/k)/(k-1) #14.20
-    #q.num <- (1/k)*sum(meta$var.g)                                   
-    unwgtvar.T.agg.tau <- var.agg-(1/k)*sum(meta$var.g)  #14.22
-    var.T.agg.tau <-  ifelse(unwgtvar.T.agg.tau <= 0, 0, unwgtvar.T.agg.tau)  #if var < 0,  its set to 0
-    se.T.agg.tau <- sqrt(var.T.agg.tau)
-    z.valueR  <-  T.agg.tau/se.T.agg.tau
-    p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
-
-    lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
-    upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
-  } 
-  Fixed <- list(FixedEffects=c(k=k, r=T.agg,  var.g=var.T.agg,  se=se.T.agg, 
-                l.ci=lower.ci,  u.ci=upper.ci,  z.value=z.value,  p.value=p.value,
-                Q=Q, df.Q=df, p_homog=p.homog, I2=I2))
-  Random <- list(RandomEffects=c(k=k, r=T.agg.tau, var.g=var.T.agg.tau,  
-                 se=se.T.agg.tau,  l.ci=lower.ci.tau, u.ci=upper.ci.tau, 
-                 z.value=z.valueR, p.value=p.valueR, Q=Q, df.Q=df,  p_homog=p.homog, 
-                 I2=I2))
-  omni.data <- as.data.frame(c(Fixed, Random))      
-  omni.data$Omnibus <- c("k", "ES", "var.ES", "SE", "CI.lower", 
-                         "CI.upper", "Z", "p", "Q", "df", "p.h", 
-                         "I2")
-  omni.data <- omni.data[c(3, 1, 2)]
-  omni.data <- as.data.frame(omni.data)
-  row.names(omni.data) <- NULL
-  return(omni.data)
-}
+# OmnibusES<-  function(meta,  var="weighted", cor = .50 ) {
+#   # Computes fixed and random effects omnibus effect size for correlations.  
+#   # Args:
+#   #   meta: data.frame with g (standardized mean diff) and n (sample size)for each study.
+#   #   var:  "weighted" or "unweighted". "weighted" is the default. Use the 
+#   #   unweighted variance method only if Q is rejected and is very large relative to k.   
+#   # Returns:
+#   #   Fixed and random effects omnibus effect size, variance, standard error, 
+#   #   upper and lower confidence intervals, p-value, Q (heterogeneity test), I2
+#   #   (I-squared--proportion of total variation in tmt effects due to heterogeneity 
+#   #   rather than chance). 
+#   meta <- MetaG(meta, cor)
+#   k <- length(!is.na(meta$g)) # number of studies
+#   df <- k-1 
+#   sum.wi <- sum(meta$wi, na.rm=TRUE)  # used to calculate omnibus
+#   sum.wiTi <- sum(meta$wiTi, na.rm=TRUE)  # used to calculate omnibus
+#   sum.wiTi2 <- sum(meta$wiTi2, na.rm=TRUE)  # used to calculate omnibus
+#   T.agg <- sum.wiTi/sum.wi  # omnibus g 
+#   var.T.agg <- 1/sum.wi  # omnibus var.g
+#   se.T.agg <- sqrt(var.T.agg) 
+#   z.value  <-  T.agg/se.T.agg
+#   p.value <-  2*pnorm(abs(z.value), lower.tail=FALSE)
+#   lower.ci <- T.agg-1.96*se.T.agg
+#   upper.ci <- T.agg + 1.96*se.T.agg
+#   Q <- sum.wiTi2-(sum.wiTi^2)/sum.wi  # FE homogeneity test
+#   I2 <- (Q-(k-1))/Q  # I-squared 
+#   I2 <- ifelse(I2<0, 0, I2)        
+#   I2 <- paste(round(I2*100, 4),  "%",  sep="")                        
+#   p.homog <- pchisq(Q, df, lower.tail=FALSE)  # <.05 = sig. heterogeneity  
+#   # random effects #
+#   sum.wi2 <- sum(meta$wi^2, na.rm=TRUE)
+#   comp <- sum.wi-sum.wi2/sum.wi
+#   sum.wi.tau <- sum(meta$wi.tau, na.rm=TRUE)
+#   sum.wiTi.tau <- sum(meta$wiTi.tau, na.rm=TRUE)
+#   sum.wiTi2.tau <- sum(meta$wiTi2.tau, na.rm=TRUE)
+#   T.agg.tau <- sum.wiTi.tau/sum.wi.tau
+#   if(var == "weighted") {
+#     var.T.agg.tau <-  1/sum.wi.tau 
+#     se.T.agg.tau <- sqrt(var.T.agg.tau)
+#     z.valueR  <-  T.agg.tau/se.T.agg.tau
+#     p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
+#     lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
+#     upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
+#   }
+#   if(var == "unweighted") {  # unweighted variance method
+#     var.agg <- (sum(meta$g^2)-sum(meta$g)^2/k)/(k-1) #14.20
+#     #q.num <- (1/k)*sum(meta$var.g)                                   
+#     unwgtvar.T.agg.tau <- var.agg-(1/k)*sum(meta$var.g)  #14.22
+#     var.T.agg.tau <-  ifelse(unwgtvar.T.agg.tau <= 0, 0, unwgtvar.T.agg.tau)  #if var < 0,  its set to 0
+#     se.T.agg.tau <- sqrt(var.T.agg.tau)
+#     z.valueR  <-  T.agg.tau/se.T.agg.tau
+#     p.valueR <-  2*pnorm(abs(z.valueR), lower.tail=FALSE)
+# 
+#     lower.ci.tau <- T.agg.tau-1.96*se.T.agg.tau
+#     upper.ci.tau <- T.agg.tau + 1.96*se.T.agg.tau
+#   } 
+#   Fixed <- list(FixedEffects=c(k=k, r=T.agg,  var.g=var.T.agg,  se=se.T.agg, 
+#                 l.ci=lower.ci,  u.ci=upper.ci,  z.value=z.value,  p.value=p.value,
+#                 Q=Q, df.Q=df, p_homog=p.homog, I2=I2))
+#   Random <- list(RandomEffects=c(k=k, r=T.agg.tau, var.g=var.T.agg.tau,  
+#                  se=se.T.agg.tau,  l.ci=lower.ci.tau, u.ci=upper.ci.tau, 
+#                  z.value=z.valueR, p.value=p.valueR, Q=Q, df.Q=df,  p_homog=p.homog, 
+#                  I2=I2))
+#   omni.data <- as.data.frame(c(Fixed, Random))      
+#   omni.data$Omnibus <- c("k", "ES", "var.ES", "SE", "CI.lower", 
+#                          "CI.upper", "Z", "p", "Q", "df", "p.h", 
+#                          "I2")
+#   omni.data <- omni.data[c(3, 1, 2)]
+#   omni.data <- as.data.frame(omni.data)
+#   row.names(omni.data) <- NULL
+#   return(omni.data)
+# }
 
 # Now,  if there is significant heterogeneity (p_homog < .05),  look for moderators.
 

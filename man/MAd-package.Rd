@@ -182,9 +182,6 @@ modname= "Moderator") }
 #  wd(m1, get = TRUE, new = TRUE)
 }
 \seealso{
-\bold{RcmdrPlugin.MA} package:  \url{https://CRAN.R-project.org/package=RcmdrPlugin.MA};
-
-\bold{MAc} package:  \url{https://CRAN.R-project.org/package=MAc};
 
 \bold{compute.es} package:  \url{https://CRAN.R-project.org/package=compute.es};
 

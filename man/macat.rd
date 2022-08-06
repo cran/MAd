@@ -74,8 +74,7 @@ Shadish & Haddock (2009). Analyzing effect sizes: Fixed-effects models. In H. Co
 Maintainer: AC Del Re \email{acdelre@gmail.com}
 }
 \seealso{
-\code{\link{plotcat}},
-\code{\link{wd}}
+\code{\link{plotcat}}
 }
 \examples{
 id<-c(1:20)

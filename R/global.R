@@ -1,0 +1,1 @@
+utils::globalVariables(c("aes", "g", "ggplot", "geom_jitter", "geom_point", "geom_smooth", "theme", "var.g", "wi", "wi.tau", "xlab", "ylab", "geom_boxplot", "stat_summary"))
